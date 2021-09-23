@@ -26,6 +26,7 @@ Route::prefix('/user')->group( function() {
 //     Route::get('/', 'AdduserinfoController@index.com');
 // });
 
+Route::apiResource('/user', 'AdduserinfoController');
+// Route::put('/user/update/{id}', 'AdduserinfoController@update');
 
-// Route::apiResource('/user', 'AdduserinfoController');
-Route::put('/user/update/{id}', 'AdduserinfoController@update');
+Route::apiResource('/arms', 'ArmsregisterController');

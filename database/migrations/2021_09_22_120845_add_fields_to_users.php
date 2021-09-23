@@ -23,7 +23,7 @@ class AddFieldsToUsers extends Migration
             $table->text('photo')->after('psdistance')->nullable();
             $table->double('latitude')->after('photo')->nullable();
             $table->double('longitude')->after('latitude')->nullable();
-            $table->integer('psid')->after('longitude')->nullable()->unsigned();
+            $table->unsignedBigInteger('psid')->after('longitude')->nullable();
             $table->foreign('psid')->references('id')->on('policestation');
             $table->text('taluka')->after('psid')->nullable();
         });
