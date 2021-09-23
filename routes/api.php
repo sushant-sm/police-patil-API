@@ -31,3 +31,5 @@ Route::apiResource('/user', 'AdduserinfoController');
 Route::apiResource('/arms', 'ArmsregisterController');
 
 Route::apiResource('/seize', 'SeizeregisterController');
+
+Route::apiResource('/movement', 'MovementregisterController');
