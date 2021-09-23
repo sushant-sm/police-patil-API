@@ -21,3 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/user')->group( function() {
     Route::post('/login', 'api\LoginController@login');
 });
+
+// Route::group(['middleware' => 'admin', 'prefix'=> 'api'], function() {
+//     Route::get('/', 'AdduserinfoController@index.com');
+// });
+
+Route::apiResource('/user', 'AdduserinfoController');
+// Route::put('/user/update/{id}', 'AdduserinfoController@update');
+
+Route::apiResource('/arms', 'ArmsregisterController');
