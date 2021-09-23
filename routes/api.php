@@ -27,6 +27,7 @@ Route::prefix('/user')->group( function() {
 // });
 
 Route::apiResource('/user', 'AdduserinfoController');
-// Route::put('/user/update/{id}', 'AdduserinfoController@update');
 
 Route::apiResource('/arms', 'ArmsregisterController');
+
+Route::apiResource('/seize', 'SeizeregisterController');
