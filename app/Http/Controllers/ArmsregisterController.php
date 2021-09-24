@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Armsregister;
 use Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ArmsregisterController extends Controller
 {
@@ -76,7 +77,7 @@ class ArmsregisterController extends Controller
         if(is_null($armsregister)){
             return response()->json(["message" => "Record Not found"], 404);
         }
-        return response()->json(Armsregister::find($id), 200);
+        return response()->json($armsregister, 200);
     }
 
     /**
@@ -112,4 +113,30 @@ class ArmsregisterController extends Controller
     {
         //
     }
-}
+
+    public function showbyppid($ppid) 
+    {
+        // return response()->json(["message" => "Record Not found"]);    
+        // $ppid = DB::table('armsregister')->where('ppid', $ppid);
+        $data = Armsregister::orderBy('id','desc')->where('ppid', $ppid)->get();
+        if(is_null($data)){
+            return response()->json(["message" => "Record Not found"], 404);
+        }
+        if($data->isEmpty()){
+            return response()->json(["message" => "Record Empty"], 404);
+        }
+        return response()->json($data, 200);    
+    }
+
+    public function showbypsid($psid) 
+    {
+        $data = Armsregister::orderBy('id','desc')->where('psid', $psid)->get();
+        if(is_null($data)){
+            return response()->json(["message" => "Record Not found"], 404);
+        }
+        if($data->isEmpty()){
+            return response()->json(["message" => "Record Empty"], 404);
+        }
+        return response()->json($data, 200);    
+    }
+} 
