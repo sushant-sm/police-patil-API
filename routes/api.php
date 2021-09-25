@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,20 +22,21 @@ Route::prefix('/user')->group( function() {
     Route::post('/login', 'api\LoginController@login');
 });
 
-// Route::group(['middleware' => 'admin', 'prefix'=> 'api'], function() {
-//     Route::get('/', 'AdduserinfoController@index.com');
-// });
+Route::group(['middleware' => ['auth:api']], function () {
 
-Route::apiResource('/user', 'AdduserinfoController');
+    Route::apiResource('/user', 'AdduserinfoController');
 
-Route::apiResource('/arms', 'ArmsregisterController');
-Route::get('/arms/showbyppid/{ppid}', 'ArmsregisterController@showbyppid');
-Route::get('/arms/showbypsid/{psid}', 'ArmsregisterController@showbypsid');
+    Route::apiResource('/arms', 'ArmsregisterController');
+    Route::get('/arms/showbyppid/{ppid}', 'ArmsregisterController@showbyppid');
+    Route::get('/arms/showbypsid/{psid}', 'ArmsregisterController@showbypsid');
 
-Route::apiResource('/seize', 'SeizeregisterController');
-Route::get('/seize/showbyppid/{ppid}', 'SeizeregisterController@showbyppid');
-Route::get('/seize/showbypsid/{psid}', 'SeizeregisterController@showbypsid');
+    Route::apiResource('/seize', 'SeizeregisterController');
+    Route::get('/seize/showbyppid/{ppid}', 'SeizeregisterController@showbyppid');
+    Route::get('/seize/showbypsid/{psid}', 'SeizeregisterController@showbypsid');
 
-Route::apiResource('/movement', 'MovementregisterController');
-Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
-Route::get('/movement/showbypsid/{psid}', 'MovementregisterController@showbypsid');
+    Route::apiResource('/movement', 'MovementregisterController');
+    Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
+    Route::get('/movement/showbypsid/{psid}', 'MovementregisterController@showbypsid');
+
+    
+});
