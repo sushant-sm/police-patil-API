@@ -54,7 +54,11 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::get('/watch/showbyppid/{ppid}', 'WatchregisterController@showbyppid');
         Route::get('/watch/showbypsid/{psid}', 'WatchregisterController@showbypsid');
 
-        
+        //Crime Register
+        Route::apiResource('/crime', 'CrimeregisterController');
+        Route::get('/crime/showbyppid/{ppid}', 'CrimeregisterController@showbyppid');
+        Route::get('/crime/showbypsid/{psid}', 'CrimeregisterController@showbypsid');
+
 //  }
 
 });
