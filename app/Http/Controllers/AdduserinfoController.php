@@ -57,7 +57,7 @@ class AdduserinfoController extends Controller
         return response()->json($user, 200);
     }
 
-    /**
+    /** 
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -111,5 +111,14 @@ class AdduserinfoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function showbyppid($id) 
+    {
+        $data = User::orderBy('id','desc')->where('id', $id)->get();
+        if(is_null($data)){
+            return response()->json(["message" => "Record Not found"], 404);
+        }
+        return response()->json($data, 200);    
     }
 }

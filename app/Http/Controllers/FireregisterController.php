@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Armsregister;
+use App\Fireregister;
 use Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class ArmsregisterController extends Controller
+class FireregisterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +15,11 @@ class ArmsregisterController extends Controller
      */
     public function index()
     {
-        $arms = Armsregister::get();
-        if(is_null($arms)){
+        $fire = Fireregister::get();
+        if(is_null($fire)){
             return response()->json(["message" => "No Arms found"], 404);
         }
-        return response()->json($arms, 200);
+        return response()->json($fire, 200);
     }
 
     /**
@@ -30,8 +29,7 @@ class ArmsregisterController extends Controller
      */
     public function create()
     {
-        // return responce()->json(["messsage" => "armsrgister"], 200);
-        
+        //
     }
 
     /**
@@ -43,16 +41,14 @@ class ArmsregisterController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'type' => 'required|string',
-            'name' => 'required|string',
-            'mobile' => 'required|numeric|digits:10',
-            'aadhar' => 'required',
             'address' => 'required|string',
             'latitude' => 'required',
             'longitude' => 'required',
-            'licencenumber' => 'required',
-            'validity' => 'required|date',
-            'licencephoto' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'reason' => 'required|string',
+            'loss' => 'required',
+            'photo' => 'required',
             'ppid' => 'required',
             'psid' => 'required',
         ];
@@ -60,33 +56,33 @@ class ArmsregisterController extends Controller
         if($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
-        $arms = Armsregister::create($request->all());
+        $fire = Fireregister::create($request->all());
 
-        return response()->json($arms, 201);
+        return response()->json($fire, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Fireregister  $fireregister
      * @return \Illuminate\Http\Response
      */
-    public function show(Armsregister $armsregister, $id)
+    public function show(Fireregister $fireregister, $id)
     {
-        $armsregister = Armsregister::find($id);
-        if(is_null($armsregister)){
+        $fireregister = Fireregister::find($id);
+        if(is_null($fireregister)){
             return response()->json(["message" => "Record Not found"], 404);
         }
-        return response()->json($armsregister, 200);
+        return response()->json($fireregister, 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Fireregister  $fireregister
      * @return \Illuminate\Http\Response
      */
-    public function edit(Armsregister $armsregister)
+    public function edit(Fireregister $fireregister)
     {
         //
     }
@@ -95,10 +91,10 @@ class ArmsregisterController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Fireregister  $fireregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Armsregister $armsregister)
+    public function update(Request $request, Fireregister $fireregister)
     {
         //
     }
@@ -106,17 +102,17 @@ class ArmsregisterController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Fireregister  $fireregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Armsregister $armsregister)
+    public function destroy(Fireregister $fireregister)
     {
         //
     }
 
     public function showbyppid($ppid) 
     {
-        $data = Armsregister::orderBy('id','desc')->where('ppid', $ppid)->get();
+        $data = Fireregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
             return response()->json(["message" => "Record Not found"], 404);
         }
@@ -128,7 +124,7 @@ class ArmsregisterController extends Controller
 
     public function showbypsid($psid) 
     {
-        $data = Armsregister::orderBy('id','desc')->where('psid', $psid)->get();
+        $data = Fireregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
             return response()->json(["message" => "Record Not found"], 404);
         }
@@ -137,4 +133,4 @@ class ArmsregisterController extends Controller
         }
         return response()->json($data, 200);    
     }
-} 
+}

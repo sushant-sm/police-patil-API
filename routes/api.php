@@ -25,6 +25,7 @@ Route::prefix('/user')->group( function() {
 Route::group(['middleware' => ['auth:api']], function () {
 
     Route::apiResource('/user', 'AdduserinfoController');
+    Route::get('/api/user/{id}', 'AdduserinfoController@showbyid');
     
     //Register Section
 //  {
@@ -44,11 +45,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
         Route::get('/movement/showbypsid/{psid}', 'MovementregisterController@showbypsid');
 
-        //Movement Register
-        Route::apiResource('/movement', 'MovementregisterController');
-        Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
-        Route::get('/movement/showbypsid/{psid}', 'MovementregisterController@showbypsid');
-
+        
         //Watch Register
         Route::apiResource('/watch', 'WatchregisterController');
         Route::get('/watch/showbyppid/{ppid}', 'WatchregisterController@showbyppid');
@@ -58,6 +55,15 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::apiResource('/crime', 'CrimeregisterController');
         Route::get('/crime/showbyppid/{ppid}', 'CrimeregisterController@showbyppid');
         Route::get('/crime/showbypsid/{psid}', 'CrimeregisterController@showbypsid');
+
+        //Fire Register
+        Route::apiResource('/fire', 'FireregisterController');
+        Route::get('/fire/showbyppid/{ppid}', 'FireregisterController@showbyppid');
+        Route::get('/fire/showbypsid/{psid}', 'FireregisterController@showbypsid');
+
+        Route::apiResource('/useraccess', 'UseraccessController');
+        Route::post('/useraccesstable/{user_id}', 'UseraccessController@useraccesstable');
+    
 
 //  }
 
