@@ -73,6 +73,16 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::apiResource('/missing', 'MissingregisterController');
         Route::get('/missing/showbyppid/{ppid}', 'MissingregisterController@showbyppid');
         Route::get('/missing/showbypsid/{psid}', 'MissingregisterController@showbypsid');
+
+        //Missing Register
+        Route::apiResource('/publicplace', 'PublicplaceregisterController');
+        Route::get('/publicplace/showbyppid/{ppid}', 'PublicplaceregisterController@showbyppid');
+        Route::get('/publicplace/showbypsid/{psid}', 'PublicplaceregisterController@showbypsid');
+
+        //Missing Register
+        Route::apiResource('/illegalwork', 'IllegalworkregisterController');
+        Route::get('/illegalwork/showbyppid/{ppid}', 'IllegalworkregisterController@showbyppid');
+        Route::get('/illegalwork/showbypsid/{psid}', 'IllegalworkregisterController@showbypsid');
     
 
 //  }

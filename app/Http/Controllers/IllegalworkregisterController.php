@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Movementregister;
-use Illuminate\Http\Request;
+use App\Illegalworkregister;
 use Validator;
-class MovementregisterController extends Controller
+use Illuminate\Http\Request;
+
+class IllegalworkregisterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,12 +15,11 @@ class MovementregisterController extends Controller
      */
     public function index()
     {
-        // return response()->json(["message" => "No Movement found"]);
-        $movement = Movementregister::all();
-        if(is_null($movement)){
-            return response()->json(["message" => "No Seize register found"], 404);
+        $illegalwork = Illegalworkregister::get();
+        if(is_null($illegalwork)){
+            return response()->json(["message" => "No Arms found"], 404);
         }
-        return response()->json($movement, 200);
+        return response()->json($illegalwork, 200);
     }
 
     /**
@@ -41,16 +41,9 @@ class MovementregisterController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'type' => 'required|string', 
-            'subtype' => 'required|string',
-            'address' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'datetime' => 'required',
-            'essue' => 'required|boolean', 
-            'attendance' => 'required|integer', 
-            'description' => 'required', 
-            'photo' => 'required',
+            'type' => 'required|string',
+            'name' => 'required|string',
+            'address' => 'required|string',
             'ppid' => 'required',
             'psid' => 'required',
         ];
@@ -58,33 +51,33 @@ class MovementregisterController extends Controller
         if($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
-        $movement = Movementregister::create($request->all());
+        $illegalwork = Illegalworkregister::create($request->all());
 
-        return response()->json($movement, 201);
+        return response()->json($illegalwork, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Movementregister  $movementregister
+     * @param  \App\Illegalworkregister  $illegalworkregister
      * @return \Illuminate\Http\Response
      */
-    public function show(Movementregister $movementregister, $id)
+    public function show(Illegalworkregister $illegalworkregister, $id)
     {
-        $movement = Movementregister::find($id);
-        if(is_null($movement)){
+        $illegelworkregister = Illegalworkregister::find($id);
+        if(is_null($illegelworkregister)){
             return response()->json(["message" => "Record Not found"], 404);
         }
-        return response()->json(Movementregister::find($id), 200);
+        return response()->json($illegelworkregister, 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Movementregister  $movementregister
+     * @param  \App\Illegalworkregister  $illegalworkregister
      * @return \Illuminate\Http\Response
      */
-    public function edit(Movementregister $movementregister)
+    public function edit(Illegalworkregister $illegalworkregister)
     {
         //
     }
@@ -93,10 +86,10 @@ class MovementregisterController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Movementregister  $movementregister
+     * @param  \App\Illegalworkregister  $illegalworkregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Movementregister $movementregister)
+    public function update(Request $request, Illegalworkregister $illegalworkregister)
     {
         //
     }
@@ -104,17 +97,17 @@ class MovementregisterController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Movementregister  $movementregister
+     * @param  \App\Illegalworkregister  $illegalworkregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Movementregister $movementregister)
+    public function destroy(Illegalworkregister $illegalworkregister)
     {
         //
     }
 
     public function showbyppid($ppid) 
     {
-        $data = Movementregister::orderBy('id','desc')->where('ppid', $ppid)->get();
+        $data = Illegalworkregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
             return response()->json(["message" => "Record Not found"], 404);
         }
@@ -126,7 +119,7 @@ class MovementregisterController extends Controller
 
     public function showbypsid($psid) 
     {
-        $data = Movementregister::orderBy('id','desc')->where('psid', $psid)->get();
+        $data = Illegalworkregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
             return response()->json(["message" => "Record Not found"], 404);
         }
