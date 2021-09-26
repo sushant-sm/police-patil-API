@@ -19,7 +19,7 @@ class AddFieldsToUsers extends Migration
             $table->text('address')->after('village')->nullable();
             $table->date('joindate')->after('address')->nullable();
             $table->date('enddate')->after('joindate')->nullable();
-            $table->string('psdistance')->after('enddate')->nullable();
+            $table->double('psdistance')->after('enddate')->nullable();
             $table->text('photo')->after('psdistance')->nullable();
             $table->double('latitude')->after('photo')->nullable();
             $table->double('longitude')->after('latitude')->nullable();

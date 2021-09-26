@@ -17,9 +17,9 @@ class IllegalworkregisterController extends Controller
     {
         $illegalwork = Illegalworkregister::get();
         if(is_null($illegalwork)){
-            return response()->json(["message" => "No Arms found"], 404);
+            return response()->json(["error" => "No Arms found"], 404);
         }
-        return response()->json($illegalwork, 200);
+        return response()->json(["message" => "Success", "data" => $illegalwork], 200);
     }
 
     /**
@@ -53,7 +53,7 @@ class IllegalworkregisterController extends Controller
         }
         $illegalwork = Illegalworkregister::create($request->all());
 
-        return response()->json($illegalwork, 201);
+        return response()->json(["message" => "Success", "data" => $illegalwork], 201);
     }
 
     /**
@@ -66,9 +66,9 @@ class IllegalworkregisterController extends Controller
     {
         $illegelworkregister = Illegalworkregister::find($id);
         if(is_null($illegelworkregister)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json($illegelworkregister, 200);
+        return response()->json(["message" => "Success", "data" => $illegalworkregister], 200);
     }
 
     /**
@@ -109,23 +109,23 @@ class IllegalworkregisterController extends Controller
     {
         $data = Illegalworkregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 
     public function showbypsid($psid) 
     {
         $data = Illegalworkregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 }

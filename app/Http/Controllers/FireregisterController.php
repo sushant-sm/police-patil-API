@@ -19,7 +19,7 @@ class FireregisterController extends Controller
         if(is_null($fire)){
             return response()->json(["message" => "No Arms found"], 404);
         }
-        return response()->json($fire, 200);
+        return response()->json(["message" => "Success", "data" => $fire], 200);
     }
 
     /**
@@ -58,7 +58,7 @@ class FireregisterController extends Controller
         }
         $fire = Fireregister::create($request->all());
 
-        return response()->json($fire, 201);
+        return response()->json(["message" => "Success", "data" => $fire], 201);
     }
 
     /**
@@ -71,9 +71,9 @@ class FireregisterController extends Controller
     {
         $fireregister = Fireregister::find($id);
         if(is_null($fireregister)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json($fireregister, 200);
+        return response()->json(["message" => "Success", "data" => $fireregister], 200);
     }
 
     /**
@@ -119,7 +119,7 @@ class FireregisterController extends Controller
         if($data->isEmpty()){
             return response()->json(["message" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 
     public function showbypsid($psid) 
@@ -131,6 +131,6 @@ class FireregisterController extends Controller
         if($data->isEmpty()){
             return response()->json(["message" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 }

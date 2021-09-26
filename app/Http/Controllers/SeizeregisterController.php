@@ -17,9 +17,9 @@ class SeizeregisterController extends Controller
     {
         $seize = Seizeregister::get();
         if(is_null($seize)){
-            return response()->json(["message" => "No Seize register found"], 404);
+            return response()->json(["error" => "No Seize register found"], 404);
         }
-        return response()->json($seize, 200);
+        return response()->json(["message" => "Success", "data" => $seize], 200);
     }
 
     /**
@@ -55,9 +55,9 @@ class SeizeregisterController extends Controller
         if($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
-        $arms = Seizeregister::create($request->all());
+        $seize = Seizeregister::create($request->all());
 
-        return response()->json($arms, 201);
+        return response()->json(["message" => "Success", "data" => $seize], 201);
     }
 
     /**
@@ -70,9 +70,9 @@ class SeizeregisterController extends Controller
     {
         $seizegister = Seizeregister::find($id);
         if(is_null($seizegister)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json(Seizeregister::find($id), 200);
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 
     /**
@@ -113,23 +113,23 @@ class SeizeregisterController extends Controller
     {
         $data = Seizeregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 
     public function showbypsid($psid) 
     {
         $data = Seizeregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 }

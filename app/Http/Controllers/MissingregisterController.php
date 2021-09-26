@@ -17,9 +17,9 @@ class MissingregisterController extends Controller
     {
         $missing = Missingregister::get();
         if(is_null($missing)){
-            return response()->json(["message" => "No Arms found"], 404);
+            return response()->json(["error" => "No Arms found"], 404);
         }
-        return response()->json($missing, 200);
+        return response()->json(["message" => "Success", "data" => $missing], 200);
     }
 
     /**
@@ -53,9 +53,9 @@ class MissingregisterController extends Controller
         if($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
-        $arms = Missingregister::create($request->all());
+        $missing = Missingregister::create($request->all());
 
-        return response()->json($arms, 201);
+        return response()->json(["message" => "Success", "data" => $missing], 201);
     }
 
     /**
@@ -68,9 +68,9 @@ class MissingregisterController extends Controller
     {
         $missingregister = Missingregister::find($id);
         if(is_null($missingregister)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json($missingregister, 200);
+        return response()->json(["message" => "Success", "data" => $missingregister], 200);
     }
 
     /**
@@ -110,23 +110,23 @@ class MissingregisterController extends Controller
     {
         $data = Missingregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 
     public function showbypsid($psid) 
     {
         $data = Missingregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 }

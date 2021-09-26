@@ -17,9 +17,9 @@ class MovementregisterController extends Controller
         // return response()->json(["message" => "No Movement found"]);
         $movement = Movementregister::all();
         if(is_null($movement)){
-            return response()->json(["message" => "No Seize register found"], 404);
+            return response()->json(["error" => "No Seize register found"], 404);
         }
-        return response()->json($movement, 200);
+        return response()->json(["message" => "Success", "data" => $movement], 200);
     }
 
     /**
@@ -60,7 +60,7 @@ class MovementregisterController extends Controller
         }
         $movement = Movementregister::create($request->all());
 
-        return response()->json($movement, 201);
+        return response()->json(["message" => "Success", "data" => $movement], 201);
     }
 
     /**
@@ -73,9 +73,9 @@ class MovementregisterController extends Controller
     {
         $movement = Movementregister::find($id);
         if(is_null($movement)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json(Movementregister::find($id), 200);
+        return response()->json(["message" => "Success", "data" => $movement], 200);
     }
 
     /**
@@ -116,23 +116,23 @@ class MovementregisterController extends Controller
     {
         $data = Movementregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 
     public function showbypsid($psid) 
     {
         $data = Movementregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 }

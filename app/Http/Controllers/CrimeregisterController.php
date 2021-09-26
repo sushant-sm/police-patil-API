@@ -16,9 +16,9 @@ class CrimeregisterController extends Controller
     {
         $crime = Crimeregister::get();
         if(is_null($crime)){
-            return response()->json(["message" => "No Arms found"], 404);
+            return response()->json(["error" => "No Arms found"], 404);
         }
-        return response()->json($crime, 200);
+        return response()->json(["message" => "Success", "data"=>$crime], 200);
     }
 
     /**
@@ -51,7 +51,7 @@ class CrimeregisterController extends Controller
         }
         $crime = Crimeregister::create($request->all());
 
-        return response()->json($crime, 201);
+        return response()->json(["message" => "Success", "data"=>$crime], 201);
     }
 
     /**
@@ -64,9 +64,9 @@ class CrimeregisterController extends Controller
     {
         $crimeregister = Crimeregister::find($id);
         if(is_null($crimeregister)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json($crimeregister, 200);
+        return response()->json(["message" => "Success", "data"=>$crimeregister], 200);
     }
 
     /**
@@ -107,23 +107,23 @@ class CrimeregisterController extends Controller
     {
         $data = Crimeregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data"=>$data], 200);    
     }
 
     public function showbypsid($psid) 
     {
         $data = Crimeregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data"=>$data], 200);    
     }
 }

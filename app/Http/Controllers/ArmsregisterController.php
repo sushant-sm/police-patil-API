@@ -18,9 +18,9 @@ class ArmsregisterController extends Controller
     {
         $arms = Armsregister::get();
         if(is_null($arms)){
-            return response()->json(["message" => "No Arms found"], 404);
+            return response()->json(["error" => "No Arms found"], 404);
         }
-        return response()->json($arms, 200);
+        return response()->json(["message" => "Success", "data"=>$arms], 200);
     }
 
     /**
@@ -62,7 +62,7 @@ class ArmsregisterController extends Controller
         }
         $arms = Armsregister::create($request->all());
 
-        return response()->json($arms, 201);
+        return response()->json(["message" => "Success", "data"=>$arms], 201);
     }
 
     /**
@@ -75,7 +75,7 @@ class ArmsregisterController extends Controller
     {
         $armsregister = Armsregister::find($id);
         if(is_null($armsregister)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         return response()->json($armsregister, 200);
     }
@@ -118,23 +118,23 @@ class ArmsregisterController extends Controller
     {
         $data = Armsregister::orderBy('id','desc')->where('ppid', $ppid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data"=>$data], 200);    
     }
 
     public function showbypsid($psid) 
     {
         $data = Armsregister::orderBy('id','desc')->where('psid', $psid)->get();
         if(is_null($data)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
         if($data->isEmpty()){
-            return response()->json(["message" => "Record Empty"], 404);
+            return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data"=>$arms], 200);    
     }
 } 

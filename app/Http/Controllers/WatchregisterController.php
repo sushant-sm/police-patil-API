@@ -17,9 +17,9 @@ class WatchregisterController extends Controller
     {
         $watch = Watchregister::get();
         if(is_null($watch)){
-            return response()->json(["message" => "No Arms found"], 404);
+            return response()->json(["error" => "No Arms found"], 404);
         }
-        return response()->json($watch, 200);
+        return response()->json(["message" => "Success", "data" => $watch], 200);
     }
 
     /**
@@ -60,7 +60,7 @@ class WatchregisterController extends Controller
         }
         $watch = Watchregister::create($request->all());
 
-        return response()->json($watch, 201);
+        return response()->json(["message" => "Success", "data" => $watch], 201);
     }
 
     /**
@@ -75,7 +75,7 @@ class WatchregisterController extends Controller
         if(is_null($watchregister)){
             return response()->json(["message" => "Record Not found"], 404);
         }
-        return response()->json($watchregister, 200);
+        return response()->json(["message" => "Success", "data" => $watchregister], 200);
     }
 
     /**
@@ -121,7 +121,7 @@ class WatchregisterController extends Controller
         if($data->isEmpty()){
             return response()->json(["message" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 
     public function showbypsid($psid) 
@@ -133,6 +133,6 @@ class WatchregisterController extends Controller
         if($data->isEmpty()){
             return response()->json(["message" => "Record Empty"], 404);
         }
-        return response()->json($data, 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
 }
