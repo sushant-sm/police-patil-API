@@ -26,6 +26,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::apiResource('/user', 'AdduserinfoController');
     Route::get('/api/user/{id}', 'AdduserinfoController@showbyid');
+
+    Route::apiResource('/useraccess', 'UseraccessController');
+    Route::post('/useraccesstable/{user_id}', 'UseraccessController@useraccesstable');
     
     //Register Section
 //  {
@@ -61,8 +64,15 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::get('/fire/showbyppid/{ppid}', 'FireregisterController@showbyppid');
         Route::get('/fire/showbypsid/{psid}', 'FireregisterController@showbypsid');
 
-        Route::apiResource('/useraccess', 'UseraccessController');
-        Route::post('/useraccesstable/{user_id}', 'UseraccessController@useraccesstable');
+        //Death Register
+        Route::apiResource('/death', 'DeathregisterController');
+        Route::get('/death/showbyppid/{ppid}', 'DeathregisterController@showbyppid');
+        Route::get('/death/showbypsid/{psid}', 'DeathregisterController@showbypsid');
+
+        //Missing Register
+        Route::apiResource('/missing', 'MissingregisterController');
+        Route::get('/missing/showbyppid/{ppid}', 'MissingregisterController@showbyppid');
+        Route::get('/missing/showbypsid/{psid}', 'MissingregisterController@showbypsid');
     
 
 //  }
