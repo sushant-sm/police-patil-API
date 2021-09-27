@@ -54,7 +54,7 @@ class AdduserinfoController extends Controller
         if(is_null($user)){
             return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json($user, 200);
+        return response()->json(["message" => "Success", "data" => $user], 200);
     }
 
     /** 

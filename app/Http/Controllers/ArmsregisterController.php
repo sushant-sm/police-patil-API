@@ -116,25 +116,48 @@ class ArmsregisterController extends Controller
 
     public function showbyppid($ppid) 
     {
-        $data = Armsregister::orderBy('id','desc')->where('ppid', $ppid)->get();
-        if(is_null($data)){
-            return response()->json(["error" => "Record Not found"], 404);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if($ppid == $uid)
+        {
+            $data = Armsregister::orderBy('id','desc')->where('ppid', $ppid)->get();
+            if(is_null($data)){
+                return response()->json(["error" => "Record Not found"], 404);
+            }
+            if($data->isEmpty()){
+                return response()->json(["error" => "Record Empty"], 404);
+            }
+            return response()->json(["message" => "Success", "data"=>$data], 200); 
+
         }
-        if($data->isEmpty()){
-            return response()->json(["error" => "Record Empty"], 404);
+        else 
+        {
+            return response()->json(["error" => "Your Not authorised Person"], 404); 
         }
-        return response()->json(["message" => "Success", "data"=>$data], 200);    
+        
+           
     }
 
     public function showbypsid($psid) 
     {
-        $data = Armsregister::orderBy('id','desc')->where('psid', $psid)->get();
-        if(is_null($data)){
-            return response()->json(["error" => "Record Not found"], 404);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if($psid == $uid)
+        {
+            $data = Armsregister::orderBy('id','desc')->where('psid', $psid)->get();
+            if(is_null($data)){
+                return response()->json(["error" => "Record Not found"], 404);
+            }
+            if($data->isEmpty()){
+                return response()->json(["error" => "Record Empty"], 404);
+            }
+            return response()->json(["message" => "Success", "data"=>$arms], 200);    
         }
-        if($data->isEmpty()){
-            return response()->json(["error" => "Record Empty"], 404);
+        else 
+        {
+            return response()->json(["error" => "Your Not authorised Person"], 200); 
         }
-        return response()->json(["message" => "Success", "data"=>$arms], 200);    
     }
 } 
