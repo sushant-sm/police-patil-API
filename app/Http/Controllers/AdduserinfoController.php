@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\User;
-use Validator;
+use Validator; 
 use Illuminate\Http\Request;
 
 class AdduserinfoController extends Controller
@@ -16,9 +16,9 @@ class AdduserinfoController extends Controller
     {
         $user = User::get();
         if(is_null($user)){
-            return responce()->json($user, 201);
+            return responce()->json(["error" => "Record Not found"], 201);
         }
-        return response()->json($user, 200);
+        return response()->json(["message" => "Success", "data" => $user] , 200);
     }
 
     /**
@@ -52,12 +52,12 @@ class AdduserinfoController extends Controller
     {
         $user = User::find($id);
         if(is_null($user)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json($user, 200);
+        return response()->json(["message" => "Success", "data" => $user], 200);
     }
 
-    /**
+    /** 
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -79,27 +79,28 @@ class AdduserinfoController extends Controller
     {
         $user = User::find($id);
         if(is_null($user)){
-            return response()->json(["message" => "Record Not found"], 404);
+            return response()->json(["error" => "Record Not found"], 404);
         }
-        $rules = [
-            'village' => 'required|string',
-            'mobile' => 'required|numeric|digits:10',
-            'address' => 'required|text',
-            'joindate' => 'required|date',
-            'enddate' => 'required|date',
-            'psdistance' => 'required|string',
-            'photo' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'psid ' => 'required',
-            'taluka' => 'required|string',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 404);
-        }
+        // $rules = [
+        //     'name' => 'required|string',
+        //     'village' => 'required|string',
+        //     'mobile' => 'required|numeric|digits:10',
+        //     'address' => 'required|text',
+        //     'joindate' => 'required|date',
+        //     'enddate' => 'required|date',
+        //     'psdistance' => 'required|string',
+        //     'photo' => 'required',
+        //     'latitude' => 'required',
+        //     'longitude' => 'required',
+        //     'psid ' => 'required',
+        //     'taluka' => 'required|string',
+        // ];
+        // $validator = Validator::make($request->all(), $rules);
+        // if($validator->fails()) {
+        //     return response()->json($validator->errors(), 404);
+        // }
         $user->update($request->all());
-        return response()->json($user, 200);
+        return response()->json(["message" => "User Updated Succesfully", "data" => $user], 200);
     }
 
     /**
@@ -111,5 +112,14 @@ class AdduserinfoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function showbyppid($id) 
+    {
+        $data = User::orderBy('id','desc')->where('id', $id)->get();
+        if(is_null($data)){
+            return response()->json(["error" => "Record Not found"], 404);
+        }
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

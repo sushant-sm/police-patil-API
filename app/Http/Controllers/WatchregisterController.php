@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Armsregister;
+use App\Watchregister;
 use Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class ArmsregisterController extends Controller
+class WatchregisterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +15,11 @@ class ArmsregisterController extends Controller
      */
     public function index()
     {
-        $arms = Armsregister::get();
-        if(is_null($arms)){
+        $watch = Watchregister::get();
+        if(is_null($watch)){
             return response()->json(["error" => "No Arms found"], 404);
         }
-        return response()->json(["message" => "Success", "data"=>$arms], 200);
+        return response()->json(["message" => "Success", "data" => $watch], 200);
     }
 
     /**
@@ -30,8 +29,7 @@ class ArmsregisterController extends Controller
      */
     public function create()
     {
-        // return responce()->json(["messsage" => "armsrgister"], 200);
-        
+        //
     }
 
     /**
@@ -46,13 +44,13 @@ class ArmsregisterController extends Controller
             'type' => 'required|string',
             'name' => 'required|string',
             'mobile' => 'required|numeric|digits:10',
+            'photo' => 'required',
             'aadhar' => 'required',
             'address' => 'required|string',
             'latitude' => 'required',
             'longitude' => 'required',
-            'licencenumber' => 'required',
-            'validity' => 'required|date',
-            'licencephoto' => 'required',
+            'description' => 'required|string',
+            'otherphoto' => 'required',
             'ppid' => 'required',
             'psid' => 'required',
         ];
@@ -60,33 +58,33 @@ class ArmsregisterController extends Controller
         if($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
-        $arms = Armsregister::create($request->all());
+        $watch = Watchregister::create($request->all());
 
-        return response()->json(["message" => "Success", "data"=>$arms], 201);
+        return response()->json(["message" => "Success", "data" => $watch], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Watchregister  $watchregister
      * @return \Illuminate\Http\Response
      */
-    public function show(Armsregister $armsregister, $id)
+    public function show(Watchregister $watchregister, $id)
     {
-        $armsregister = Armsregister::find($id);
-        if(is_null($armsregister)){
-            return response()->json(["error" => "Record Not found"], 404);
+        $watchregister = Watchregister::find($id);
+        if(is_null($watchregister)){
+            return response()->json(["message" => "Record Not found"], 404);
         }
-        return response()->json($armsregister, 200);
+        return response()->json(["message" => "Success", "data" => $watchregister], 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Watchregister  $watchregister
      * @return \Illuminate\Http\Response
      */
-    public function edit(Armsregister $armsregister)
+    public function edit(Watchregister $watchregister)
     {
         //
     }
@@ -95,10 +93,10 @@ class ArmsregisterController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Watchregister  $watchregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Armsregister $armsregister)
+    public function update(Request $request, Watchregister $watchregister)
     {
         //
     }
@@ -106,10 +104,10 @@ class ArmsregisterController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Armsregister  $armsregister
+     * @param  \App\Watchregister  $watchregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Armsregister $armsregister)
+    public function destroy(Watchregister $watchregister)
     {
         //
     }
@@ -121,43 +119,30 @@ class ArmsregisterController extends Controller
 
         if($ppid == $uid)
         {
-            $data = Armsregister::orderBy('id','desc')->where('ppid', $ppid)->get();
+            $data = Watchregister::orderBy('id','desc')->where('ppid', $ppid)->get();
             if(is_null($data)){
-                return response()->json(["error" => "Record Not found"], 404);
+                return response()->json(["message" => "Record Not found"], 404);
             }
             if($data->isEmpty()){
-                return response()->json(["error" => "Record Empty"], 404);
+                return response()->json(["message" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data"=>$data], 200); 
-
+            return response()->json(["message" => "Success", "data" => $data], 200);    
         }
         else 
         {
             return response()->json(["error" => "Your Not authorised Person"], 404); 
         }
-        
-           
     }
 
     public function showbypsid($psid) 
     {
-        $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
-
-        if($psid == $uid)
-        {
-            $data = Armsregister::orderBy('id','desc')->where('psid', $psid)->get();
-            if(is_null($data)){
-                return response()->json(["error" => "Record Not found"], 404);
-            }
-            if($data->isEmpty()){
-                return response()->json(["error" => "Record Empty"], 404);
-            }
-            return response()->json(["message" => "Success", "data"=>$arms], 200);    
+        $data = Watchregister::orderBy('id','desc')->where('psid', $psid)->get();
+        if(is_null($data)){
+            return response()->json(["message" => "Record Not found"], 404);
         }
-        else 
-        {
-            return response()->json(["error" => "Your Not authorised Person"], 200); 
+        if($data->isEmpty()){
+            return response()->json(["message" => "Record Empty"], 404);
         }
+        return response()->json(["message" => "Success", "data" => $data], 200);    
     }
-} 
+}

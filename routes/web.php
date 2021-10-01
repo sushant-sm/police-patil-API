@@ -18,5 +18,7 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
+Route::group(['middleware' => ['auth']], function () {
+Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
+});
 Route::get('/home', 'HomeController@index')->name('home');
