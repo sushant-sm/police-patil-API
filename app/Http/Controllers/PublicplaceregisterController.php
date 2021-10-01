@@ -16,7 +16,7 @@ class PublicplaceregisterController extends Controller
     public function index()
     {
         $publicplaceregister = Publicplaceregister::all();
-        if(is_null($publicplaceregister)){
+        if (is_null($publicplaceregister)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $publicplaceregister], 200);
@@ -47,10 +47,10 @@ class PublicplaceregisterController extends Controller
             'psid' => 'required',
         ];
         $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
-        $publiplace = Publicplaceregister::create($request->all());
+        $publicplace = Publicplaceregister::create($request->all());
 
         return response()->json(["message" => "Success", "data" => $publicplace], 201);
     }
@@ -64,7 +64,7 @@ class PublicplaceregisterController extends Controller
     public function show(Publicplaceregister $publicplaceregister)
     {
         $publicplace = Publicplaceregister::find($id);
-        if(is_null($publicplace)){
+        if (is_null($publicplace)) {
             return response()->json(["message" => "Record Not found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $publicplace], 200);
@@ -104,37 +104,34 @@ class PublicplaceregisterController extends Controller
         //
     }
 
-    public function showbyppid($ppid) 
+    public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
 
-        if($ppid == $uid)
-        {
-            $data = Publicplaceregister::orderBy('id','desc')->where('ppid', $ppid)->get();
-            if(is_null($data)){
+        if ($ppid == $uid) {
+            $data = Publicplaceregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
+            if (is_null($data)) {
                 return response()->json(["error" => "Record Not found"], 404);
             }
-            if($data->isEmpty()){
+            if ($data->isEmpty()) {
                 return response()->json(["error" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data" => $data], 200);    
-        }
-        else 
-        {
-            return response()->json(["error" => "Your Not authorised Person"], 404); 
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
     }
 
-    public function showbypsid($psid) 
+    public function showbypsid($psid)
     {
-        $data = Publicplaceregister::orderBy('id','desc')->where('psid', $psid)->get();
-        if(is_null($data)){
+        $data = Publicplaceregister::orderBy('id', 'desc')->where('psid', $psid)->get();
+        if (is_null($data)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $data], 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }
