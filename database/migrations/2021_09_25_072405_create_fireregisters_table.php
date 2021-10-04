@@ -16,12 +16,12 @@ class CreateFireregistersTable extends Migration
         Schema::create('fireregisters', function (Blueprint $table) {
             $table->id();
             $table->string('address');
-            $table->double('latitude');
-            $table->double('longitude');
+            $table->double('latitude')->nullable();
+            $table->double('longitude')->nullable();
             $table->date('date');
-            $table->time('time');
-            $table->string('reason');
-            $table->string('loss');
+            $table->time('time')->nullable();
+            $table->string('reason')->nullable();
+            $table->string('loss')->nullable();
             $table->text('photo')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');

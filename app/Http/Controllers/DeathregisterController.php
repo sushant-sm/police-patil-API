@@ -15,10 +15,10 @@ class DeathregisterController extends Controller
     public function index()
     {
         $death = Deathregister::get();
-        if(is_null($death)){
+        if (is_null($death)) {
             return response()->json(["error" => "No Arms found"], 404);
         }
-        return response()->json(["message" => "Success", "data"=> $death], 200);
+        return response()->json(["message" => "Success", "data" => $death], 200);
     }
 
     /**
@@ -39,9 +39,40 @@ class DeathregisterController extends Controller
      */
     public function store(Request $request)
     {
-        $death = Deathregister::create($request->all());
+        $data = $request->validate([
+            'isknown' => 'required',
+            'name' => 'nullable|string',
+            'gender' => 'required',
+            'address' => 'nullable|string',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'foundaddress' => 'nullable',
+            'causeofdeath' => 'nullable',
+            'age' => 'nullable|numeric',
+            'ppid' => 'required',
+            'psid' => 'required'
+        ]);
 
-        return response()->json(["message" => "Success", "data"=> $death], 201);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($uid != $data['ppid']) {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
+        }
+
+
+        if ($request->hasfile('photo')) {
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/deathregister', $filename);
+            $data['photo'] = $filename;
+        }
+
+        $death = Deathregister::create($data);
+
+        return response()->json(["message" => "Success", "data" => $death], 201);
     }
 
     /**
@@ -53,10 +84,10 @@ class DeathregisterController extends Controller
     public function show(Deathregister $deathregister, $id)
     {
         $death = Deathregister::find($id);
-        if(is_null($death)){
+        if (is_null($death)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json(["message" => "Success", "data"=> $death], 200);
+        return response()->json(["message" => "Success", "data" => $death], 200);
     }
 
     /**
@@ -93,37 +124,34 @@ class DeathregisterController extends Controller
         //
     }
 
-    public function showbyppid($ppid) 
+    public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
 
-        if($ppid == $uid)
-        {
-            $data = Deathregister::orderBy('id','desc')->where('ppid', $ppid)->get();
-            if(is_null($data)){
+        if ($ppid == $uid) {
+            $data = Deathregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
+            if (is_null($data)) {
                 return response()->json(["error" => "Record Not found"], 404);
             }
-            if($data->isEmpty()){
+            if ($data->isEmpty()) {
                 return response()->json(["error" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data"=>$data], 200);    
-        }
-        else 
-        {
-            return response()->json(["error" => "Your Not authorised Person"], 404); 
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
     }
 
-    public function showbypsid($psid) 
+    public function showbypsid($psid)
     {
-        $data = Deathregister::orderBy('id','desc')->where('psid', $psid)->get();
-        if(is_null($data)){
+        $data = Deathregister::orderBy('id', 'desc')->where('psid', $psid)->get();
+        if (is_null($data)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $data], 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

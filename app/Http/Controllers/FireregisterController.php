@@ -16,7 +16,7 @@ class FireregisterController extends Controller
     public function index()
     {
         $fire = Fireregister::get();
-        if(is_null($fire)){
+        if (is_null($fire)) {
             return response()->json(["message" => "No Arms found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $fire], 200);
@@ -40,23 +40,36 @@ class FireregisterController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $data = $request->validate([
             'address' => 'required|string',
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
             'date' => 'required',
-            'time' => 'required',
-            'reason' => 'required|string',
-            'loss' => 'required',
-            'photo' => 'required',
+            'time' => 'nullable',
+            'reason' => 'nullable|string',
+            'loss' => 'nullable',
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'ppid' => 'required',
             'psid' => 'required',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 404);
+        ]);
+
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($uid != $data['ppid']) {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
-        $fire = Fireregister::create($request->all());
+
+
+        if ($request->hasfile('photo')) {
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/fireregister', $filename);
+            $data['photo'] = $filename;
+        }
+
+        $fire = Fireregister::create($data);
 
         return response()->json(["message" => "Success", "data" => $fire], 201);
     }
@@ -70,7 +83,7 @@ class FireregisterController extends Controller
     public function show(Fireregister $fireregister, $id)
     {
         $fireregister = Fireregister::find($id);
-        if(is_null($fireregister)){
+        if (is_null($fireregister)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $fireregister], 200);
@@ -110,37 +123,34 @@ class FireregisterController extends Controller
         //
     }
 
-    public function showbyppid($ppid) 
+    public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
 
-        if($ppid == $uid)
-        {
-            $data = Fireregister::orderBy('id','desc')->where('ppid', $ppid)->get();
-            if(is_null($data)){
+        if ($ppid == $uid) {
+            $data = Fireregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
+            if (is_null($data)) {
                 return response()->json(["message" => "Record Not found"], 404);
             }
-            if($data->isEmpty()){
+            if ($data->isEmpty()) {
                 return response()->json(["message" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data" => $data], 200);    
-        }
-        else 
-        {
-            return response()->json(["error" => "Your Not authorised Person"], 404); 
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
     }
 
-    public function showbypsid($psid) 
+    public function showbypsid($psid)
     {
-        $data = Fireregister::orderBy('id','desc')->where('psid', $psid)->get();
-        if(is_null($data)){
+        $data = Fireregister::orderBy('id', 'desc')->where('psid', $psid)->get();
+        if (is_null($data)) {
             return response()->json(["message" => "Record Not found"], 404);
         }
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json(["message" => "Record Empty"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $data], 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

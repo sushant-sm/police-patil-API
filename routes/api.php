@@ -18,7 +18,7 @@ use Carbon\Carbon;
 //     return $request->user();
 // });
 
-Route::prefix('/user')->group( function() {
+Route::prefix('/user')->group(function () {
     Route::post('/login', 'api\LoginController@login');
 });
 
@@ -29,61 +29,61 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::apiResource('/useraccess', 'UseraccessController');
     Route::post('/useraccesstable/{user_id}', 'UseraccessController@useraccesstable');
-    
+
     //Register Section
-//  {
+    //  {
 
-        //Arms Register
-        Route::apiResource('/arms', 'ArmsregisterController');
-        Route::get('/arms/showbyppid/{ppid}', 'ArmsregisterController@showbyppid');
-        Route::get('/arms/showbypsid/{psid}', 'ArmsregisterController@showbypsid');
+    //Arms Register
+    Route::apiResource('/arms', 'ArmsregisterController');
+    Route::get('/arms/showbyppid/{ppid}', 'ArmsregisterController@showbyppid');
+    Route::get('/arms/showbypsid/{psid}', 'ArmsregisterController@showbypsid');
 
-        //Seize Register
-        Route::apiResource('/seize', 'SeizeregisterController');
-        Route::get('/seize/showbyppid/{ppid}', 'SeizeregisterController@showbyppid');
-        Route::get('/seize/showbypsid/{psid}', 'SeizeregisterController@showbypsid');
+    //Seize Register
+    Route::apiResource('/seize', 'SeizeregisterController');
+    Route::get('/seize/showbyppid/{ppid}', 'SeizeregisterController@showbyppid');
+    Route::get('/seize/showbypsid/{psid}', 'SeizeregisterController@showbypsid');
 
-        // Movement Register
-        Route::apiResource('/movement', 'MovementregisterController');
-        Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
-        Route::get('/movement/showbypsid/{psid}', 'MovementregisterController@showbypsid');
+    // Movement Register
+    Route::apiResource('/movement', 'MovementregisterController');
+    Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
+    Route::get('/movement/showbypsid/{psid}', 'MovementregisterController@showbypsid');
 
-        
-        //Watch Register
-        Route::apiResource('/watch', 'WatchregisterController');
-        Route::get('/watch/showbyppid/{ppid}', 'WatchregisterController@showbyppid');
-        Route::get('/watch/showbypsid/{psid}', 'WatchregisterController@showbypsid');
 
-        //Crime Register
-        Route::apiResource('/crime', 'CrimeregisterController');
-        Route::get('/crime/showbyppid/{ppid}', 'CrimeregisterController@showbyppid');
-        Route::get('/crime/showbypsid/{psid}', 'CrimeregisterController@showbypsid');
+    //Watch Register
+    Route::apiResource('/watch', 'WatchregisterController');
+    Route::get('/watch/showbyppid/{ppid}', 'WatchregisterController@showbyppid');
+    Route::get('/watch/showbypsid/{psid}', 'WatchregisterController@showbypsid');
 
-        //Fire Register
-        Route::apiResource('/fire', 'FireregisterController');
-        Route::get('/fire/showbyppid/{ppid}', 'FireregisterController@showbyppid');
-        Route::get('/fire/showbypsid/{psid}', 'FireregisterController@showbypsid');
+    //Crime Register
+    Route::apiResource('/crime', 'CrimeregisterController');
+    Route::get('/crime/showbyppid/{ppid}', 'CrimeregisterController@showbyppid');
+    Route::get('/crime/showbypsid/{psid}', 'CrimeregisterController@showbypsid');
 
-        //Death Register
-        Route::apiResource('/death', 'DeathregisterController');
-        Route::get('/death/showbyppid/{ppid}', 'DeathregisterController@showbyppid');
-        Route::get('/death/showbypsid/{psid}', 'DeathregisterController@showbypsid');
+    //Fire Register
+    Route::apiResource('/fire', 'FireregisterController');
+    Route::get('/fire/showbyppid/{ppid}', 'FireregisterController@showbyppid');
+    Route::get('/fire/showbypsid/{psid}', 'FireregisterController@showbypsid');
 
-        //Missing Register
-        Route::apiResource('/missing', 'MissingregisterController');
-        Route::get('/missing/showbyppid/{ppid}', 'MissingregisterController@showbyppid');
-        Route::get('/missing/showbypsid/{psid}', 'MissingregisterController@showbypsid');
+    //Death Register
+    Route::apiResource('/death', 'DeathregisterController');
+    Route::get('/death/showbyppid/{ppid}', 'DeathregisterController@showbyppid');
+    Route::get('/death/showbypsid/{psid}', 'DeathregisterController@showbypsid');
 
-        //Public place Register
-        Route::apiResource('/publicplace', 'PublicplaceregisterController');
-        Route::get('/publicplace/showbyppid/{ppid}', 'PublicplaceregisterController@showbyppid');
-        Route::get('/publicplace/showbypsid/{psid}', 'PublicplaceregisterController@showbypsid');
+    //Missing Register
+    Route::apiResource('/missing', 'MissingregisterController');
+    Route::get('/missing/showbyppid/{ppid}', 'MissingregisterController@showbyppid');
+    Route::get('/missing/showbypsid/{psid}', 'MissingregisterController@showbypsid');
 
-        //Illegal work Register
-        Route::apiResource('/illegalwork', 'IllegalworkregisterController');
-        Route::get('/illegalwork/showbyppid/{ppid}', 'IllegalworkregisterController@showbyppid');
-        Route::get('/illegalwork/showbypsid/{psid}', 'IllegalworkregisterController@showbypsid');
-    
-//  }
+    //Public place Register
+    Route::apiResource('/publicplace', 'PublicplaceregisterController');
+    Route::get('/publicplace/showbyppid/{ppid}', 'PublicplaceregisterController@showbyppid');
+    Route::get('/publicplace/showbypsid/{psid}', 'PublicplaceregisterController@showbypsid');
+
+    //Illegal work Register
+    Route::apiResource('/illegalwork', 'IllegalworkregisterController');
+    Route::get('/illegalwork/showbyppid/{ppid}', 'IllegalworkregisterController@showbyppid');
+    Route::get('/illegalwork/showbypsid/{psid}', 'IllegalworkregisterController@showbypsid');
+
+    //  }
 
 });

@@ -18,7 +18,7 @@ class CreateIllegalworkregistersTable extends Migration
             $table->string('type');
             $table->string('name');
             $table->text('photo')->nullable();
-            $table->text('address');
+            $table->text('address')->nullable();
             $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
             $table->unsignedBigInteger('ppid');

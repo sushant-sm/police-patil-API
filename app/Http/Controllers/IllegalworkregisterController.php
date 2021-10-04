@@ -16,7 +16,7 @@ class IllegalworkregisterController extends Controller
     public function index()
     {
         $illegalwork = Illegalworkregister::get();
-        if(is_null($illegalwork)){
+        if (is_null($illegalwork)) {
             return response()->json(["error" => "No Arms found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $illegalwork], 200);
@@ -40,18 +40,33 @@ class IllegalworkregisterController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $data = $request->validate([
             'type' => 'required|string',
             'name' => 'required|string',
-            'address' => 'required|string',
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'address' => 'nullable|string',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
             'ppid' => 'required',
             'psid' => 'required',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 404);
+        ]);
+
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($uid != $data['ppid']) {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
-        $illegalwork = Illegalworkregister::create($request->all());
+
+
+        if ($request->hasfile('photo')) {
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/illegalworkregister', $filename);
+            $data['photo'] = $filename;
+        }
+        $illegalwork = Illegalworkregister::create($data);
 
         return response()->json(["message" => "Success", "data" => $illegalwork], 201);
     }
@@ -65,7 +80,7 @@ class IllegalworkregisterController extends Controller
     public function show(Illegalworkregister $illegalworkregister, $id)
     {
         $illegelworkregister = Illegalworkregister::find($id);
-        if(is_null($illegelworkregister)){
+        if (is_null($illegelworkregister)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $illegalworkregister], 200);
@@ -105,37 +120,34 @@ class IllegalworkregisterController extends Controller
         //
     }
 
-    public function showbyppid($ppid) 
+    public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
 
-        if($ppid == $uid)
-        {
-            $data = Illegalworkregister::orderBy('id','desc')->where('ppid', $ppid)->get();
-            if(is_null($data)){
+        if ($ppid == $uid) {
+            $data = Illegalworkregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
+            if (is_null($data)) {
                 return response()->json(["error" => "Record Not found"], 404);
             }
-            if($data->isEmpty()){
+            if ($data->isEmpty()) {
                 return response()->json(["error" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data" => $data], 200);    
-        }
-        else 
-        {
-            return response()->json(["error" => "Your Not authorised Person"], 404); 
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
     }
 
-    public function showbypsid($psid) 
+    public function showbypsid($psid)
     {
-        $data = Illegalworkregister::orderBy('id','desc')->where('psid', $psid)->get();
-        if(is_null($data)){
+        $data = Illegalworkregister::orderBy('id', 'desc')->where('psid', $psid)->get();
+        if (is_null($data)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $data], 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

@@ -16,9 +16,9 @@ class CreateCrimeregistersTable extends Migration
         Schema::create('crimeregisters', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->string('registernumber');
-            $table->date('date');
-            $table->time('time');
+            $table->string('registernumber')->nullable();
+            $table->date('date')->nullable();
+            $table->time('time')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');

@@ -16,7 +16,7 @@ class MissingregisterController extends Controller
     public function index()
     {
         $missing = Missingregister::get();
-        if(is_null($missing)){
+        if (is_null($missing)) {
             return response()->json(["error" => "No Arms found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $missing], 200);
@@ -40,20 +40,44 @@ class MissingregisterController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $data = $request->validate([
+            'isadult' => 'nullable',
             'name' => 'required|string',
-            'age' => 'required|numeric',
+            'age' => 'nullable|numeric',
             'gender' => 'required',
-            'address' => 'required|string',
+            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'address' => 'nullable',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
             'missingdate' => 'required',
             'ppid' => 'required',
             'psid' => 'required',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 404);
+        ]);
+
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($uid != $data['ppid']) {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
-        $missing = Missingregister::create($request->all());
+
+        if ($request->hasfile('aadhar')) {
+            $file = $request->file('aadhar');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/missingregister/aadhar', $filename);
+            $data['aadhar'] = $filename;
+        }
+        if ($request->hasfile('photo')) {
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/missingregister/photo', $filename);
+            $data['photo'] = $filename;
+        }
+
+        $missing = Missingregister::create($data);
 
         return response()->json(["message" => "Success", "data" => $missing], 201);
     }
@@ -67,7 +91,7 @@ class MissingregisterController extends Controller
     public function show(Missingregister $missingregister, $id)
     {
         $missingregister = Missingregister::find($id);
-        if(is_null($missingregister)){
+        if (is_null($missingregister)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $missingregister], 200);
@@ -106,37 +130,34 @@ class MissingregisterController extends Controller
     {
         //
     }
-    public function showbyppid($ppid) 
+    public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
 
-        if($ppid == $uid)
-        {
-            $data = Missingregister::orderBy('id','desc')->where('ppid', $ppid)->get();
-            if(is_null($data)){
+        if ($ppid == $uid) {
+            $data = Missingregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
+            if (is_null($data)) {
                 return response()->json(["error" => "Record Not found"], 404);
             }
-            if($data->isEmpty()){
+            if ($data->isEmpty()) {
                 return response()->json(["error" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data" => $data], 200);    
-        }
-        else 
-        {
-            return response()->json(["error" => "Your Not authorised Person"], 404); 
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
     }
 
-    public function showbypsid($psid) 
+    public function showbypsid($psid)
     {
-        $data = Missingregister::orderBy('id','desc')->where('psid', $psid)->get();
-        if(is_null($data)){
+        $data = Missingregister::orderBy('id', 'desc')->where('psid', $psid)->get();
+        if (is_null($data)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $data], 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

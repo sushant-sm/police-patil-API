@@ -17,11 +17,11 @@ class CreateMissingregistersTable extends Migration
             $table->id();
             $table->boolean('isadult')->nullable();
             $table->string('name');
-            $table->integer('age');
+            $table->integer('age')->nullable();
             $table->string('gender');
             $table->text('aadhar')->nullable();
             $table->text('photo')->nullable();
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
             $table->date('missingdate');

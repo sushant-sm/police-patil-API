@@ -24,7 +24,7 @@ class CreatePublicplaceregistersTable extends Migration
             $table->boolean('isissue')->nullable();
             $table->string('issuereason')->nullable();
             $table->string('issuecondition')->nullable();
-            $table->boolean('crimeregisterd')->nullable();
+            $table->boolean('crimeregistered')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');

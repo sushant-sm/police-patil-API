@@ -20,10 +20,10 @@ class CreateWatchregistersTable extends Migration
             $table->bigInteger('mobile')->nullable();
             $table->text('photo')->nullable();
             $table->text('aadhar')->nullable();
-            $table->text('address');
-            $table->double('latitude');
-            $table->double('longitude');
-            $table->text('description');
+            $table->text('address')->nullable();
+            $table->double('latitude')->nullable();
+            $table->double('longitude')->nullable();
+            $table->text('description')->nullable();
             $table->text('otherphoto')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');

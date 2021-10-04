@@ -16,7 +16,7 @@ class SeizeregisterController extends Controller
     public function index()
     {
         $seize = Seizeregister::get();
-        if(is_null($seize)){
+        if (is_null($seize)) {
             return response()->json(["error" => "No Seize register found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $seize], 200);
@@ -40,22 +40,35 @@ class SeizeregisterController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $data = $request->validate([
             'type' => 'required|string',
-            'address' => 'required|string',
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'address' => 'nullable|string',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
             'date' => 'required|date',
-            'description' => 'required',
-            'photo' => 'required',
+            'description' => 'nullable',
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'ppid' => 'required',
             'psid' => 'required',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 404);
+        ]);
+
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($uid != $data['ppid']) {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
-        $seize = Seizeregister::create($request->all());
+
+
+        if ($request->hasfile('photo')) {
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/seizeregister', $filename);
+            $data['photo'] = $filename;
+        }
+
+        $seize = Seizeregister::create($data);
 
         return response()->json(["message" => "Success", "data" => $seize], 201);
     }
@@ -69,10 +82,10 @@ class SeizeregisterController extends Controller
     public function show(Seizeregister $seizeregister, $id)
     {
         $seizegister = Seizeregister::find($id);
-        if(is_null($seizegister)){
+        if (is_null($seizegister)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $data], 200);
+        return response()->json(["message" => "Success", "data" => $seizegister], 200);
     }
 
     /**
@@ -109,37 +122,34 @@ class SeizeregisterController extends Controller
         //
     }
 
-    public function showbyppid($ppid) 
+    public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
 
-        if($ppid == $uid)
-        {
-            $data = Seizeregister::orderBy('id','desc')->where('ppid', $ppid)->get();
-            if(is_null($data)){
+        if ($ppid == $uid) {
+            $data = Seizeregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
+            if (is_null($data)) {
                 return response()->json(["error" => "Record Not found"], 404);
             }
-            if($data->isEmpty()){
+            if ($data->isEmpty()) {
                 return response()->json(["error" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data" => $data], 200);    
-        }
-        else 
-        {
-            return response()->json(["error" => "Your Not authorised Person"], 404); 
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
     }
 
-    public function showbypsid($psid) 
+    public function showbypsid($psid)
     {
-        $data = Seizeregister::orderBy('id','desc')->where('psid', $psid)->get();
-        if(is_null($data)){
+        $data = Seizeregister::orderBy('id', 'desc')->where('psid', $psid)->get();
+        if (is_null($data)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json(["error" => "Record Empty"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $data], 200);    
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

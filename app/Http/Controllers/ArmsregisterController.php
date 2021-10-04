@@ -47,33 +47,38 @@ class ArmsregisterController extends Controller
         $data = $request->validate([
             'type' => 'required|string',
             'name' => 'required|string',
-            'mobile' => 'required|numeric|digits:10',
+            'mobile' => 'nullable|numeric|digits:10',
+            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'address' => 'nullable',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
+            'licencenumber' => 'nullable',
+            'validity' => 'nullable',
+            'licencephoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'ppid' => 'required',
-            'psid' => 'required',
-            'mobile',
-            'aadhar' => 'image|mimes:jpg,png,jpeg,svg',
-            'address',
-            'latitude',
-            'longitude',
-            'licencenumber',
-            'validity',
-            'licencephoto' => 'image|mimes:jpg,png,jpeg,svg',
-            'ppid',
-            'psid'
+            'psid' => 'required'
         ]);
+
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($uid != $data['ppid']) {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
+        }
+
 
         if ($request->hasfile('aadhar')) {
             $file = $request->file('aadhar');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
-            $file->move('uploads/arms/aadhar', $filename);
+            $file->move('uploads/armsregister/aadhar', $filename);
             $data['aadhar'] = $filename;
         }
         if ($request->hasfile('licencephoto')) {
             $file = $request->file('licencephoto');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
-            $file->move('uploads/arms/LicencePhoto', $filename);
+            $file->move('uploads/armsregister/LicencePhoto', $filename);
             $data['licencephoto'] = $filename;
         }
 
@@ -163,7 +168,7 @@ class ArmsregisterController extends Controller
             if ($data->isEmpty()) {
                 return response()->json(["error" => "Record Empty"], 404);
             }
-            return response()->json(["message" => "Success", "data" => $arms], 200);
+            return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 200);
         }

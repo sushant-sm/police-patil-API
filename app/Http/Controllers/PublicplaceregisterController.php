@@ -40,17 +40,39 @@ class PublicplaceregisterController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $data = $request->validate([
             'place' => 'required|string',
             'address' => 'required|string',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'iscctv' => 'nullable',
+            'isessue' => 'nullable',
+            'issuereason' => 'nullable',
+            'issuecondition' => 'nullable',
+            'crimeregistered' => 'nullable',
             'ppid' => 'required',
             'psid' => 'required',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 404);
+        ]);
+
+
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($uid != $data['ppid']) {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
-        $publicplace = Publicplaceregister::create($request->all());
+
+
+        if ($request->hasfile('photo')) {
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/publicplaceregister', $filename);
+            $data['photo'] = $filename;
+        }
+
+        $publicplace = Publicplaceregister::create($data);
 
         return response()->json(["message" => "Success", "data" => $publicplace], 201);
     }
@@ -61,7 +83,7 @@ class PublicplaceregisterController extends Controller
      * @param  \App\Publicplaceregister  $publicplaceregister
      * @return \Illuminate\Http\Response
      */
-    public function show(Publicplaceregister $publicplaceregister)
+    public function show(Publicplaceregister $publicplaceregister, $id)
     {
         $publicplace = Publicplaceregister::find($id);
         if (is_null($publicplace)) {
