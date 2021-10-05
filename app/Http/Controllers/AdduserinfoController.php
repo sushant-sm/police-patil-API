@@ -76,24 +76,16 @@ class AdduserinfoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, User $user)
+    public function update(Request $request, $id)
     {
-        // $user = User::find($id);
-        // if (is_null($user)) {
-        //     return response()->json(["error" => "Record Not found"], 404);
-        // }
-        // if ($request->hasfile('photo')) {
-        //     $file = $request->file('photo');
-        //     $extension = $file->getClientOriginalExtension();
-        //     $filename = time() . '.' . $extension;
-        //     $file->move('uploads/users/photo', $filename);
-        //     $photo = $filename;
-        //     User::where('id', $id)->update([
-        //         'photo' => $photo
-        //     ]);
-        // }
+        $user = User::find($id);
+        if (is_null($user)) {
+            return response()->json(["error" => "Record Not found"], 404);
+        }
+        //
         // $user->update($request->all());
         // return response()->json(["message" => "User Updated Succesfully", "data" => $user], 200);
+
         $data = $request->validate([
             'name' => 'required|string',
             'village' => 'required|string',
@@ -109,6 +101,7 @@ class AdduserinfoController extends Controller
             'taluka' => 'required',
             'password' => 'required'
         ]);
+
 
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
@@ -129,7 +122,7 @@ class AdduserinfoController extends Controller
             $data['photo'] = $filename;
         }
 
-        $user = User::update($data);
+        $user = $user->update($data);
         return response()->json(["message" => "User Updated Succesfully", "data" => $user], 200);
     }
 

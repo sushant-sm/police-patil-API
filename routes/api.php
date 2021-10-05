@@ -86,4 +86,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //  }
 
+
+    Route::apiResource('/news', 'NewsController');
+    Route::apiResource('/alert', 'AlertController');
 });

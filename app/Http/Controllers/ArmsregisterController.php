@@ -77,7 +77,7 @@ class ArmsregisterController extends Controller
         if ($request->hasfile('licencephoto')) {
             $file = $request->file('licencephoto');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/armsregister/aadhar/' . time() . '.' . $extension;
             $file->move('uploads/armsregister/LicencePhoto', $filename);
             $data['licencephoto'] = $filename;
         }
@@ -149,6 +149,7 @@ class ArmsregisterController extends Controller
             if ($data->isEmpty()) {
                 return response()->json(["error" => "Record Empty"], 404);
             }
+            // $dataa = $data['aadhar'];
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 404);
