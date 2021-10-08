@@ -51,7 +51,7 @@ class AlertController extends Controller
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/alert/photo/' . time() . '.' . $extension;
             $file->move('uploads/alert/photo', $filename);
             $data['photo'] = $filename;
         }
@@ -59,7 +59,7 @@ class AlertController extends Controller
         if ($request->hasfile('file')) {
             $file = $request->file('file');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/alert/file/' . time() . '.' . $extension;
             $file->move('uploads/alert/file', $filename);
             $data['file'] = $filename;
         }

@@ -62,7 +62,7 @@ class IllegalworkregisterController extends Controller
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/illegalworkregister/' . time() . '.' . $extension;
             $file->move('uploads/illegalworkregister', $filename);
             $data['photo'] = $filename;
         }

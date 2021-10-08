@@ -67,7 +67,7 @@ class PublicplaceregisterController extends Controller
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/publicplaceregister/' . time() . '.' . $extension;
             $file->move('uploads/publicplaceregister', $filename);
             $data['photo'] = $filename;
         }

@@ -70,14 +70,14 @@ class ArmsregisterController extends Controller
         if ($request->hasfile('aadhar')) {
             $file = $request->file('aadhar');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/armsregister/aadhar/' . time() . '.' . $extension;
             $file->move('uploads/armsregister/aadhar', $filename);
             $data['aadhar'] = $filename;
         }
         if ($request->hasfile('licencephoto')) {
             $file = $request->file('licencephoto');
             $extension = $file->getClientOriginalExtension();
-            $filename = 'pp.thesupernest.com/uploads/armsregister/aadhar/' . time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/armsregister/licencephoto/' . time() . '.' . $extension;
             $file->move('uploads/armsregister/LicencePhoto', $filename);
             $data['licencephoto'] = $filename;
         }

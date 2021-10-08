@@ -65,14 +65,14 @@ class MissingregisterController extends Controller
         if ($request->hasfile('aadhar')) {
             $file = $request->file('aadhar');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/missingregister/aadhar/' . time() . '.' . $extension;
             $file->move('uploads/missingregister/aadhar', $filename);
             $data['aadhar'] = $filename;
         }
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/missingregister/photo/' . time() . '.' . $extension;
             $file->move('uploads/missingregister/photo', $filename);
             $data['photo'] = $filename;
         }

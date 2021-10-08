@@ -66,7 +66,7 @@ class MovementregisterController extends Controller
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/movementregister/' . time() . '.' . $extension;
             $file->move('uploads/movementregister', $filename);
             $data['photo'] = $filename;
         }

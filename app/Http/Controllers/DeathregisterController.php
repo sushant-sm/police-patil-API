@@ -65,7 +65,7 @@ class DeathregisterController extends Controller
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/deathregister/' . time() . '.' . $extension;
             $file->move('uploads/deathregister', $filename);
             $data['photo'] = $filename;
         }

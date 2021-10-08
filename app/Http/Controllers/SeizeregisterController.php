@@ -63,7 +63,7 @@ class SeizeregisterController extends Controller
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/seizeregister/' . time() . '.' . $extension;
             $file->move('uploads/seizeregister', $filename);
             $data['photo'] = $filename;
         }

@@ -64,7 +64,7 @@ class FireregisterController extends Controller
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/fireregister/' . time() . '.' . $extension;
             $file->move('uploads/fireregister', $filename);
             $data['photo'] = $filename;
         }
