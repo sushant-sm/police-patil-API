@@ -24,6 +24,7 @@ Route::prefix('/user')->group(function () {
 
 Route::group(['middleware' => ['auth:api']], function () {
 
+    // Route::put('/user/{id}', 'AdduserinfoController@update');
     Route::apiResource('/user', 'AdduserinfoController');
     Route::get('/api/user/{id}', 'AdduserinfoController@showbyid');
 
@@ -89,4 +90,6 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::apiResource('/news', 'NewsController');
     Route::apiResource('/alert', 'AlertController');
+
+    Route::apiResource('/kayade', 'KayadeController');
 });

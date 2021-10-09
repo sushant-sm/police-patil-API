@@ -78,17 +78,18 @@ class AdduserinfoController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $user = User::find($id);
         if (is_null($user)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        //
+
         // $user->update($request->all());
         // return response()->json(["message" => "User Updated Succesfully", "data" => $user], 200);
 
         $data = $request->validate([
             'name' => 'required|string',
-            'village' => 'required|string',
+            // 'village' => 'required|string',
             'mobile' => 'nullable|numeric|digits:10',
             'address' => 'nullable|string',
             'joindate' => 'nullable',
@@ -97,18 +98,21 @@ class AdduserinfoController extends Controller
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
-            'psid' => 'required',
-            'taluka' => 'required',
+            // 'psid' => 'required',
+            // 'taluka' => 'required',
             'password' => 'required'
         ]);
+        // return $data;
+
+        // return response()->json(["message" => "User Updated Succesfully", "data" => $data], 200);
+        // return "he";
+        // $loggedinuser = auth()->guard('api')->user();
+        // $uid = $loggedinuser->id;
 
 
-        $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
-
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
+        // if ($uid != $data['ppid']) {
+        //     return response()->json(["error" => "Your Not authorised Person"], 404);
+        // }
 
         $pass = $data['password'];
 
