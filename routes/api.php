@@ -92,4 +92,16 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('/alert', 'AlertController');
 
     Route::apiResource('/kayade', 'KayadeController');
+
+    Route::apiResource('/disaster', 'DisasterController');
+    Route::get('/disaster/showbyppid/{ppid}', 'DisasterController@showbyppid');
+    Route::get('/disaster/showbypsid/{psid}', 'DisasterController@showbypsid');
+
+    Route::apiResource('/disastertools', 'DisastertoolsController');
+    Route::get('/disastertools/showbyppid/{ppid}', 'DisastertoolsController@showbyppid');
+    Route::get('/disastertools/showbypsid/{psid}', 'DisastertoolsController@showbypsid');
+
+    Route::apiResource('/disasterhelper', 'DisasterhelperController');
+    Route::get('/disasterhelper/showbyppid/{ppid}', 'DisasterhelperController@showbyppid');
+    Route::get('/disasterhelper/showbypsid/{psid}', 'DisasterhelperController@showbypsid');
 });
