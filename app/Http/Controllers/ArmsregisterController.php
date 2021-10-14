@@ -96,9 +96,6 @@ class ArmsregisterController extends Controller
     public function show(Armsregister $armsregister, $id)
     {
         $armsregister = Armsregister::find($id);
-        if (is_null($armsregister)) {
-            return response()->json(["error" => "Record Not found"], 404);
-        }
         return response()->json($armsregister, 200);
     }
 
@@ -143,13 +140,6 @@ class ArmsregisterController extends Controller
 
         if ($ppid == $uid) {
             $data = Armsregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
-            if (is_null($data)) {
-                return response()->json(["error" => "Record Not found"], 404);
-            }
-            if ($data->isEmpty()) {
-                return response()->json(["error" => "Record Empty"], 404);
-            }
-            // $dataa = $data['aadhar'];
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 404);
@@ -163,12 +153,6 @@ class ArmsregisterController extends Controller
 
         if ($psid == $uid) {
             $data = Armsregister::orderBy('id', 'desc')->where('psid', $psid)->get();
-            if (is_null($data)) {
-                return response()->json(["error" => "Record Not found"], 404);
-            }
-            if ($data->isEmpty()) {
-                return response()->json(["error" => "Record Empty"], 404);
-            }
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 200);

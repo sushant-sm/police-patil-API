@@ -15,9 +15,6 @@ class NewsController extends Controller
     public function index()
     {
         $news = News::get();
-        if (is_null($news)) {
-            return response()->json(["error" => "No News found"], 404);
-        }
         return response()->json(["message" => "Success", "data" => $news], 200);
     }
 

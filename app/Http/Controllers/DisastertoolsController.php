@@ -15,9 +15,6 @@ class DisastertoolsController extends Controller
     public function index()
     {
         $disaster = Disastertools::get();
-        if (is_null($disaster)) {
-            return response()->json(["error" => "No Tools found"], 404);
-        }
         return response()->json(["message" => "Success", "data" => $disaster], 200);
     }
 
@@ -111,12 +108,6 @@ class DisastertoolsController extends Controller
 
         if ($ppid == $uid) {
             $data = Disastertools::orderBy('id', 'desc')->where('ppid', $ppid)->get();
-            if (is_null($data)) {
-                return response()->json(["error" => "Record Not found"], 404);
-            }
-            if ($data->isEmpty()) {
-                return response()->json(["error" => "Record Empty"], 404);
-            }
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 404);
@@ -125,13 +116,14 @@ class DisastertoolsController extends Controller
 
     public function showbypsid($psid)
     {
-        $data = Disastertools::orderBy('id', 'desc')->where('psid', $psid)->get();
-        if (is_null($data)) {
-            return response()->json(["error" => "Record Not found"], 404);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($psid == $uid) {
+            $data = Disastertools::orderBy('id', 'desc')->where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 404);
         }
-        if ($data->isEmpty()) {
-            return response()->json(["error" => "Record Empty"], 404);
-        }
-        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

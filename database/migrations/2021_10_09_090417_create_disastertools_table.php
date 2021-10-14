@@ -17,7 +17,6 @@ class CreateDisastertoolsTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('quantity')->nullable();
-            $table->string('type')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');

@@ -15,9 +15,6 @@ class KayadeController extends Controller
     public function index()
     {
         $kayade = Kayade::get();
-        if (is_null($kayade)) {
-            return response()->json(["error" => "No Kayade Record"], 404);
-        }
         return response()->json(["message" => "Success", "data" => $kayade], 200);
     }
 

@@ -16,9 +16,6 @@ class IllegalworkregisterController extends Controller
     public function index()
     {
         $illegalwork = Illegalworkregister::get();
-        if (is_null($illegalwork)) {
-            return response()->json(["error" => "No Arms found"], 404);
-        }
         return response()->json(["message" => "Success", "data" => $illegalwork], 200);
     }
 
@@ -127,12 +124,6 @@ class IllegalworkregisterController extends Controller
 
         if ($ppid == $uid) {
             $data = Illegalworkregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
-            if (is_null($data)) {
-                return response()->json(["error" => "Record Not found"], 404);
-            }
-            if ($data->isEmpty()) {
-                return response()->json(["error" => "Record Empty"], 404);
-            }
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 404);
@@ -142,12 +133,6 @@ class IllegalworkregisterController extends Controller
     public function showbypsid($psid)
     {
         $data = Illegalworkregister::orderBy('id', 'desc')->where('psid', $psid)->get();
-        if (is_null($data)) {
-            return response()->json(["error" => "Record Not found"], 404);
-        }
-        if ($data->isEmpty()) {
-            return response()->json(["error" => "Record Empty"], 404);
-        }
         return response()->json(["message" => "Success", "data" => $data], 200);
     }
 }

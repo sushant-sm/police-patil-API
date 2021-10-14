@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Missingregister;
-use Validator;
 use Illuminate\Http\Request;
+use App\Watchregister;
 
-class MissingregisterController extends Controller
+class WatchregisterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,11 @@ class MissingregisterController extends Controller
      */
     public function index()
     {
-        $missing = Missingregister::get();
-        return response()->json(["message" => "Success", "data" => $missing], 200);
+        $watch = Watchregister::get();
+        if (is_null($watch)) {
+            return response()->json(["error" => "No Watch found"], 404);
+        }
+        return response()->json(["message" => "Success", "data" => $watch], 200);
     }
 
     /**
@@ -38,18 +40,18 @@ class MissingregisterController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'isadult' => 'nullable',
+            'type' => 'required|string',
             'name' => 'required|string',
-            'age' => 'nullable|numeric',
-            'gender' => 'required',
-            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'mobile' => 'nullable|numeric|digits:10',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'address' => 'nullable',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
-            'missingdate' => 'required',
+            'description' => 'nullable|string',
+            'otherphoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'ppid' => 'required',
-            'psid' => 'required',
+            'psid' => 'required'
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -59,48 +61,56 @@ class MissingregisterController extends Controller
             return response()->json(["error" => "Your Not authorised Person"], 404);
         }
 
+
         if ($request->hasfile('aadhar')) {
             $file = $request->file('aadhar');
             $extension = $file->getClientOriginalExtension();
-            $filename = 'pp.thesupernest.com/uploads/missingregister/aadhar/' . time() . '.' . $extension;
-            $file->move('uploads/missingregister/aadhar', $filename);
+            $filename = 'pp.thesupernest.com/uploads/watchregister/aadhar/' . time() . '.' . $extension;
+            $file->move('uploads/watchregister/aadhar', $filename);
             $data['aadhar'] = $filename;
         }
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = 'pp.thesupernest.com/uploads/missingregister/photo/' . time() . '.' . $extension;
-            $file->move('uploads/missingregister/photo', $filename);
+            $filename = 'pp.thesupernest.com/uploads/watchregister/photo/' . time() . '.' . $extension;
+            $file->move('uploads/watchregister/photo', $filename);
             $data['photo'] = $filename;
         }
+        if ($request->hasfile('otherphoto')) {
+            $file = $request->file('otherphoto');
+            $extension = $file->getClientOriginalExtension();
+            $filename = 'pp.thesupernest.com/uploads/watchregister/otherphoto/' . time() . '.' . $extension;
+            $file->move('uploads/watchregister/otherphoto', $filename);
+            $data['otherphoto'] = $filename;
+        }
 
-        $missing = Missingregister::create($data);
+        $watch = Watchregister::create($data);
 
-        return response()->json(["message" => "Success", "data" => $missing], 201);
+        return response()->json(["message" => "Success", "data" => $watch], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Missingregister  $missingregister
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Missingregister $missingregister, $id)
+    public function show($id)
     {
-        $missingregister = Missingregister::find($id);
-        if (is_null($missingregister)) {
+        $armsregister = Watchregister::find($id);
+        if (is_null($armsregister)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-        return response()->json(["message" => "Success", "data" => $missingregister], 200);
+        return response()->json($armsregister, 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Missingregister  $missingregister
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Missingregister $missingregister)
+    public function edit($id)
     {
         //
     }
@@ -109,10 +119,10 @@ class MissingregisterController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Missingregister  $missingregister
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Missingregister $missingregister)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -120,20 +130,21 @@ class MissingregisterController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Missingregister  $missingregister
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Missingregister $missingregister)
+    public function destroy($id)
     {
         //
     }
+
     public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
 
         if ($ppid == $uid) {
-            $data = Missingregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
+            $data = Watchregister::orderBy('id', 'desc')->where('ppid', $ppid)->get();
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 404);
@@ -142,7 +153,14 @@ class MissingregisterController extends Controller
 
     public function showbypsid($psid)
     {
-        $data = Missingregister::orderBy('id', 'desc')->where('psid', $psid)->get();
-        return response()->json(["message" => "Success", "data" => $data], 200);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+
+        if ($psid == $uid) {
+            $data = Watchregister::orderBy('id', 'desc')->where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["error" => "Your Not authorised Person"], 200);
+        }
     }
 }
