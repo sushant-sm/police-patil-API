@@ -104,4 +104,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('/disasterhelper', 'DisasterhelperController');
     Route::get('/disasterhelper/showbyppid/{ppid}', 'DisasterhelperController@showbyppid');
     Route::get('/disasterhelper/showbypsid/{psid}', 'DisasterhelperController@showbypsid');
+
+    Route::apiResource('/alltables', 'AlltableController');
 });

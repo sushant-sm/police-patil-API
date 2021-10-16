@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Armsregister;
+use App\Policestation;
 use Validator;
 use File;
 use Illuminate\Support\Facades\Storage;
@@ -19,11 +20,22 @@ class ArmsregisterController extends Controller
     public function index()
     {
         $arms = Armsregister::get();
-        if (is_null($arms)) {
-            return response()->json(["error" => "No Arms found"], 404);
-        }
-        return response()->json(["message" => "Success", "data" => $arms], 200);
+        $psid = Armsregister::select('psid')->distinct()->get();
+        $psid = $psid;
+
+        $psname = $this->getpolicename($psid);
+
+        // $psname = DB::table('policestation')->where('id', $psid)->get();
+        // $psname = DB::table('policestation')->select('psname')->where('id', $psid)->get();
+        return response()->json(["message" => "Success", "data" => $arms, "psname" => $psname], 200);
     }
+
+    public function getpolicename($psid)
+    {
+        $data = Policestation::whereIn('id', $psid)->get(['psname']);
+        return $data;
+    }
+
 
     /**
      * Show the form for creating a new resource.
