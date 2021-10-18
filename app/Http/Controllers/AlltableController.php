@@ -25,27 +25,27 @@ class AlltableController extends Controller
      */
     public function create()
     {
-        $data = $request->validate([
-            'type' => 'required|string',
-            'name' => 'required|string',
-            'mobile' => 'nullable|numeric|digits:10',
-            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
-            'address' => 'nullable',
-            'latitude' => 'nullable',
-            'longitude' => 'nullable',
-            'licencenumber' => 'nullable',
-            'validity' => 'nullable',
-            'licencephoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
-            'ppid' => 'required',
-            'psid' => 'required'
-        ]);
+        // $data = $request->validate([
+        //     'type' => 'required|string',
+        //     'name' => 'required|string',
+        //     'mobile' => 'nullable|numeric|digits:10',
+        //     'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+        //     'address' => 'nullable',
+        //     'latitude' => 'nullable',
+        //     'longitude' => 'nullable',
+        //     'licencenumber' => 'nullable',
+        //     'validity' => 'nullable',
+        //     'licencephoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+        //     'ppid' => 'required',
+        //     'psid' => 'required'
+        // ]);
 
 
 
 
-        $arms = Armsregister::create($data);
+        // $arms = Armsregister::create($data);
 
-        return response()->json(["message" => "Success", "data" => $arms], 201);
+        // return response()->json(["message" => "Success", "data" => $arms], 201);
     }
 
     /**

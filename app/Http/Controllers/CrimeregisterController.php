@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Crimeregister;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Validator;
 
 class CrimeregisterController extends Controller
@@ -130,5 +131,31 @@ class CrimeregisterController extends Controller
         } else {
             return response()->json(["error" => "Your Not authorised Person"], 404);
         }
+    }
+    public function crimecount()
+    {
+        $users = Crimeregister::select('id', 'date')
+            ->get()
+            ->groupBy(function ($date) {
+
+                return Carbon::parse($date->date)->format('y'); // grouping by months
+            });
+
+        // return count($users['21']);
+        $usermcount = [];
+        $userArr = [];
+
+        foreach ($users as $key => $value) {
+            $usermcount[(int)$key] = count($value);
+        }
+
+        for ($i = 1; $i <= 12; $i++) {
+            if (!empty($usermcount[$i])) {
+                $userArr[$i] = $usermcount[$i];
+            } else {
+                $userArr[$i] = 0;
+            }
+        }
+        return response()->json(["message" => "Success", "data" => $userArr], 200);
     }
 }

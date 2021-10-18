@@ -21,7 +21,7 @@ use Carbon\Carbon;
 Route::prefix('/user')->group(function () {
     Route::post('/login', 'api\LoginController@login');
 });
-
+Route::post('adduser', 'AuthController@register');
 Route::group(['middleware' => ['auth:api']], function () {
 
     // Route::put('/user/{id}', 'AdduserinfoController@update');
@@ -30,6 +30,8 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::apiResource('/useraccess', 'UseraccessController');
     Route::post('/useraccesstable/{user_id}', 'UseraccessController@useraccesstable');
+
+    Route::apiResource('/policestation', 'PolicestationController');
 
     //Register Section
     //  {
@@ -57,6 +59,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //Crime Register
     Route::apiResource('/crime', 'CrimeregisterController');
+    Route::get('/crimecount', 'CrimeregisterController@crimecount');
     Route::get('/crime/showbyppid/{ppid}', 'CrimeregisterController@showbyppid');
     Route::get('/crime/showbypsid/{psid}', 'CrimeregisterController@showbypsid');
 
@@ -106,4 +109,5 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/disasterhelper/showbypsid/{psid}', 'DisasterhelperController@showbypsid');
 
     Route::apiResource('/alltables', 'AlltableController');
+    Route::apiResource('/useraccess', 'UseraccessController');
 });

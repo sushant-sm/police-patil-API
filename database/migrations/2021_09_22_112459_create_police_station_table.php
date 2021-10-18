@@ -16,12 +16,10 @@ class CreatePoliceStationTable extends Migration
         Schema::create('policestation', function (Blueprint $table) {
             $table->id();
             $table->string('psname');
-            $table->string('email');
-            $table->longText('password');
-            $table->string('taluka');
-            $table->text('address');
-            $table->string('latitude');
-            $table->string('longitude');
+            $table->string('email')->nullable();
+            $table->text('address')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->timestamps();
         });
     }

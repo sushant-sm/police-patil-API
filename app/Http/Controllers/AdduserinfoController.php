@@ -17,9 +17,7 @@ class AdduserinfoController extends Controller
     public function index()
     {
         $user = User::get();
-        if (is_null($user)) {
-            return response()->json(["error" => "Record Not found"], 201);
-        }
+        // return $user;
         return response()->json(["message" => "Success", "data" => $user], 200);
     }
 

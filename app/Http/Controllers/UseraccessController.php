@@ -15,11 +15,8 @@ class UseraccessController extends Controller
      */
     public function index()
     {
-        $arms = Useraccess::get();
-        if(is_null($arms)){
-            return response()->json(["message" => "No Arms found"], 404);
-        }
-        return response()->json($arms, 200);
+        $useraccess = Useraccess::get();
+        return response()->json(["message" => "success", "data" => $useraccess], 200);
     }
 
     /**
@@ -30,7 +27,7 @@ class UseraccessController extends Controller
     public function create()
     {
         // return response()->json(["messege"=>"sadf"]);
-        
+
     }
 
     /**
@@ -41,17 +38,15 @@ class UseraccessController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $data = $request->validate([
             'user_id' => 'required',
-            'tables' => 'required|string',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 404);
-        }
-        $arms = Useraccess::create($request->all());
+            'tables' => 'required',
+        ]);
+        $data['tables'] = json_encode($data['tables']);
+        // return $data;
 
-        return response()->json($arms, 201);
+        $useraccess = Useraccess::create($data);
+        return response()->json(["message" => "Success", "data" => $useraccess], 201);
     }
 
     /**
@@ -60,9 +55,12 @@ class UseraccessController extends Controller
      * @param  \App\Useraccess  $useraccess
      * @return \Illuminate\Http\Response
      */
-    public function show(Useraccess $useraccess)
+    public function show($user_id)
     {
-        //
+        $data = Useraccess::where('user_id', $user_id)->get(["tables"]);
+        $a = json_decode($data[0]['tables']);
+        return $a;
+        return response()->json(["message" => "success", "data" => $data], 200);
     }
 
     /**
@@ -99,8 +97,9 @@ class UseraccessController extends Controller
         //
     }
 
-    public function useraccesstable(Useraccess $useraccess, $user_id) {
-        $data = Useraccess::orderBy('id','desc')->where('user_id', $user_id)->get(["tables"]);
+    public function useraccesstable(Useraccess $useraccess, $user_id)
+    {
+        $data = Useraccess::orderBy('id', 'desc')->where('user_id', $user_id)->get(["tables"]);
         return response()->json($data);
     }
 }
