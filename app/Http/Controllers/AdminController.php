@@ -41,8 +41,8 @@ class AdminController extends Controller
             'name' => 'required|string',
             'email' => 'required|string',
             'password' => 'required',
-            'psname' => 'required',
-            'role' => 'nullable'
+            'role' => 'required',
+            'psname' => 'nullable',
         ]);
 
         $pass = $data['password'];
