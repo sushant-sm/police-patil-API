@@ -86,8 +86,8 @@ class AdduserinfoController extends Controller
         // return response()->json(["message" => "User Updated Succesfully", "data" => $user], 200);
 
         $data = $request->validate([
-            'name' => 'required|string',
-            // 'village' => 'required|string',
+            'name' => 'nullable|string',
+            'village' => 'nullable|string',
             'mobile' => 'nullable|numeric|digits:10',
             'address' => 'nullable|string',
             'joindate' => 'nullable',
@@ -96,8 +96,8 @@ class AdduserinfoController extends Controller
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
-            // 'psid' => 'required',
-            // 'taluka' => 'required',
+            'psid' => 'required',
+            'taluka' => 'nullable',
             'password' => 'required'
         ]);
         // return $data;

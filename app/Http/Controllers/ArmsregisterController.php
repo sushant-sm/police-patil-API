@@ -145,6 +145,8 @@ class ArmsregisterController extends Controller
         //
     }
 
+
+
     public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();

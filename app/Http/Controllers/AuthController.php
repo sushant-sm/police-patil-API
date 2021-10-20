@@ -22,9 +22,11 @@ class AuthController extends Controller
             'name' => 'unique:users|required',
             'email'    => 'unique:users|required',
             'password' => 'required',
+            'role' => 'required',
+            'psid' => 'nullable'
         ];
 
-        $input     = $request->only('name', 'email', 'password');
+        $input     = $request->only('name', 'email', 'password', 'role', 'psid');
         $validator = Validator::make($input, $rules);
 
         if ($validator->fails()) {
@@ -33,7 +35,9 @@ class AuthController extends Controller
         $name = $request->name;
         $email    = $request->email;
         $password = $request->password;
-        $user     = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($password)]);
+        $role = $request->role;
+        $psid = $request->psid;
+        $user     = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($password), 'role' => $role, 'psid' => $psid]);
         return response()->json(["message" => "Success", "data" => $user]);
     }
     public function index()

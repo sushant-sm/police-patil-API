@@ -14,7 +14,8 @@ class AddFieldsToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('mobile')->after('email')->nullable();
+            $table->string('role')->after('email');
+            $table->bigInteger('mobile')->after('role')->nullable();
             $table->string('village')->after('mobile')->nullable();
             $table->text('address')->after('village')->nullable();
             $table->date('joindate')->after('address')->nullable();
