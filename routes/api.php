@@ -26,7 +26,6 @@ Route::apiResource('/admin', 'AdminController');
 Route::post('adduser', 'AuthController@register');
 Route::group(['middleware' => ['auth:api']], function () {
 
-    // Route::put('/user/{id}', 'AdduserinfoController@update');
     Route::apiResource('/user', 'AdduserinfoController');
     Route::get('/api/user/{id}', 'AdduserinfoController@showbyid');
 
