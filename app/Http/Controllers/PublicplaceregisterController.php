@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Publicplaceregister;
+use App\Policestation;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,24 @@ class PublicplaceregisterController extends Controller
      */
     public function index()
     {
-        $publicplaceregister = Publicplaceregister::all();
-        return response()->json(["message" => "Success", "data" => $publicplaceregister], 200);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
+
+        if ($userRole == 'admin') {
+            $data = Publicplaceregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Publicplaceregister::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Publicplaceregister::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
+        }
     }
 
     /**
@@ -48,17 +65,15 @@ class PublicplaceregisterController extends Controller
             'issuereason' => 'nullable',
             'issuecondition' => 'nullable',
             'crimeregistered' => 'nullable',
-            'ppid' => 'required',
-            'psid' => 'required',
         ]);
 
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
 
         if ($request->hasfile('photo')) {

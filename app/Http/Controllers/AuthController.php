@@ -38,7 +38,7 @@ class AuthController extends Controller
         $role = $request->role;
         $psid = $request->psid;
         $user     = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($password), 'role' => $role, 'psid' => $psid]);
-        return response()->json(["message" => "Success", "data" => $user]);
+        return response()->json(["message" => "Success", "data" => $user], 201);
     }
     public function index()
     {

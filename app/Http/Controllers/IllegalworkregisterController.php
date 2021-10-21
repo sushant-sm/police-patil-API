@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Illegalworkregister;
 use Validator;
+use App\Policestation;
 use Illuminate\Http\Request;
 
 class IllegalworkregisterController extends Controller
@@ -15,8 +16,24 @@ class IllegalworkregisterController extends Controller
      */
     public function index()
     {
-        $illegalwork = Illegalworkregister::get();
-        return response()->json(["message" => "Success", "data" => $illegalwork], 200);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
+
+        if ($userRole == 'admin') {
+            $data = Illegalworkregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Illegalworkregister::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Illegalworkregister::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
+        }
     }
 
     /**
@@ -41,19 +58,18 @@ class IllegalworkregisterController extends Controller
             'type' => 'required|string',
             'name' => 'required|string',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'vehicle_no' => 'nullable',
             'address' => 'nullable|string',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
-            'ppid' => 'required',
-            'psid' => 'required',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
 
         if ($request->hasfile('photo')) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Watchregister;
+use App\Policestation;
 
 class WatchregisterController extends Controller
 {
@@ -14,11 +15,24 @@ class WatchregisterController extends Controller
      */
     public function index()
     {
-        $watch = Watchregister::get();
-        if (is_null($watch)) {
-            return response()->json(["error" => "No Watch found"], 404);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
+
+        if ($userRole == 'admin') {
+            $data = Watchregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Watchregister::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Watchregister::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
         }
-        return response()->json(["message" => "Success", "data" => $watch], 200);
     }
 
     /**
@@ -46,21 +60,20 @@ class WatchregisterController extends Controller
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'address' => 'nullable',
+            'tadipar_area' => 'nullable',
+            'tadipar_date' => 'nullable',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
             'description' => 'nullable|string',
             'otherphoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
-            'ppid' => 'required',
-            'psid' => 'required'
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
-
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
         if ($request->hasfile('aadhar')) {
             $file = $request->file('aadhar');

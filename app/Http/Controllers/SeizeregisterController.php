@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Seizeregister;
+use App\Policestation;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -15,8 +16,24 @@ class SeizeregisterController extends Controller
      */
     public function index()
     {
-        $seize = Seizeregister::get();
-        return response()->json(["message" => "Success", "data" => $seize], 200);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
+
+        if ($userRole == 'admin') {
+            $data = Seizeregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Seizeregister::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Seizeregister::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
+        }
     }
 
     /**
@@ -45,16 +62,14 @@ class SeizeregisterController extends Controller
             'date' => 'required|date',
             'description' => 'nullable',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
-            'ppid' => 'required',
-            'psid' => 'required',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
 
         if ($request->hasfile('photo')) {

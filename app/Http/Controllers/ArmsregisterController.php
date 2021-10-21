@@ -19,15 +19,36 @@ class ArmsregisterController extends Controller
      */
     public function index()
     {
-        $arms = Armsregister::get();
-        $psid = Armsregister::select('psid')->distinct()->get();
-        $psid = $psid;
 
-        $psname = $this->getpolicename($psid);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
 
-        // $psname = DB::table('policestation')->where('id', $psid)->get();
-        // $psname = DB::table('policestation')->select('psname')->where('id', $psid)->get();
-        return response()->json(["message" => "Success", "data" => $arms, "psname" => $psname], 200);
+        if ($userRole == 'admin') {
+            $data = Armsregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Armsregister::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Armsregister::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
+        }
+
+
+
+        // $arms = Armsregister::get();
+        // $psid = Armsregister::select('psid')->distinct()->get();
+        // $psid = $psid;
+
+        // $psname = $this->getpolicename($psid);
+
+
+        // return response()->json(["message" => "Success", "data" => $arms, "psname" => $psname], 200);
     }
 
     public function getpolicename($psid)
@@ -62,21 +83,21 @@ class ArmsregisterController extends Controller
             'mobile' => 'nullable|numeric|digits:10',
             'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'address' => 'nullable',
+            'uid' => 'nullable',
+            'weapon_condition' => 'nullable',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
             'licencenumber' => 'nullable',
             'validity' => 'nullable',
             'licencephoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
-            'ppid' => 'required',
-            'psid' => 'required'
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
 
         if ($request->hasfile('aadhar')) {

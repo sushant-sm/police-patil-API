@@ -98,7 +98,8 @@ class AdduserinfoController extends Controller
             'longitude' => 'nullable',
             'psid' => 'required',
             'taluka' => 'nullable',
-            'password' => 'required'
+            'password' => 'required',
+            'dangerzone' => 'nullable'
         ]);
         // return $data;
 
@@ -115,6 +116,8 @@ class AdduserinfoController extends Controller
         $pass = $data['password'];
 
         $data['password'] = Hash::make($pass);
+
+        $data['dangerzone'] = json_encode($data['dangerzone']);
 
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');

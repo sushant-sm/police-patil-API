@@ -25,7 +25,7 @@ class CreateSeizeregistersTable extends Migration
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');
-            $table->foreign('psid')->references('id')->on('policestation');
+            $table->foreign('psid')->references('id')->on('policestations');
             $table->timestamps();
         });
     }

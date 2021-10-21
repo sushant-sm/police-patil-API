@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Disaster;
+use App\Policestation;
 use Illuminate\Http\Request;
 
 class DisasterController extends Controller
@@ -14,8 +15,24 @@ class DisasterController extends Controller
      */
     public function index()
     {
-        $disaster = Disaster::get();
-        return response()->json(["message" => "Success", "data" => $disaster], 200);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
+
+        if ($userRole == 'admin') {
+            $data = Disaster::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Disaster::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Disaster::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
+        }
     }
 
     /**
@@ -42,16 +59,16 @@ class DisasterController extends Controller
             'date' => 'required',
             'casuality' => 'nullable',
             'level' => 'nullable',
-            'ppid' => 'required',
-            'psid' => 'required'
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
         $disaster = Disaster::create($data);
 

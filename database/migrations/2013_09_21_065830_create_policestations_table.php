@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUseraccessesTable extends Migration
+class CreatePolicestationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateUseraccessesTable extends Migration
      */
     public function up()
     {
-        Schema::create('useraccesses', function (Blueprint $table) {
+        Schema::create('policestations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->string('tables');
+            $table->string('psname');
+            $table->text('address')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateUseraccessesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('useraccesses');
+        Schema::dropIfExists('policestations');
     }
 }

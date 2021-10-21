@@ -19,7 +19,6 @@ class CreateMissingregistersTable extends Migration
             $table->string('name');
             $table->integer('age')->nullable();
             $table->string('gender');
-            $table->text('aadhar')->nullable();
             $table->text('photo')->nullable();
             $table->string('address')->nullable();
             $table->double('latitude')->nullable();
@@ -28,7 +27,7 @@ class CreateMissingregistersTable extends Migration
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');
-            $table->foreign('psid')->references('id')->on('policestation');
+            $table->foreign('psid')->references('id')->on('policestations');
             $table->timestamps();
         });
     }

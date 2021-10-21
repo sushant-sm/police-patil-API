@@ -17,6 +17,8 @@ class CreateMovementregistersTable extends Migration
             $table->id();
             $table->string('type');
             $table->string('subtype');
+            $table->string('leader')->nullable();
+            $table->string('movement_type')->nullable();
             $table->text('address')->nullable();
             $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
@@ -28,7 +30,7 @@ class CreateMovementregistersTable extends Migration
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');
-            $table->foreign('psid')->references('id')->on('policestation');
+            $table->foreign('psid')->references('id')->on('policestations');
             $table->timestamps();
         });
     }

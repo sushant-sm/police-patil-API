@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIllegalworkregistersTable extends Migration
+class CreateGramsurakshasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,11 @@ class CreateIllegalworkregistersTable extends Migration
      */
     public function up()
     {
-        Schema::create('illegalworkregisters', function (Blueprint $table) {
+        Schema::create('gramsurakshas', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
             $table->string('name');
-            $table->text('photo')->nullable();
-            $table->text('address')->nullable();
-            $table->string('vehicle_no')->nullable();
-            $table->double('latitude')->nullable();
-            $table->double('longitude')->nullable();
+            $table->string('skill');
+            $table->bigInteger('mobile');
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');
@@ -37,6 +33,6 @@ class CreateIllegalworkregistersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('illegalworkregisters');
+        Schema::dropIfExists('gramsurakshas');
     }
 }

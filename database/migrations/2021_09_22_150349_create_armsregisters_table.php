@@ -23,12 +23,14 @@ class CreateArmsregistersTable extends Migration
             $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
             $table->text('licencenumber')->nullable();
+            $table->integer('uid')->nullable();
+            $table->string('weapon_condition')->nullable();
             $table->date('validity')->nullable();
             $table->text('licencephoto')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');
-            $table->foreign('psid')->references('id')->on('policestation');
+            $table->foreign('psid')->references('id')->on('policestations');
             $table->timestamps();
         });
     }

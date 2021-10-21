@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Missingregister;
 use Validator;
+use App\Policestation;
 use Illuminate\Http\Request;
 
 class MissingregisterController extends Controller
@@ -15,8 +16,24 @@ class MissingregisterController extends Controller
      */
     public function index()
     {
-        $missing = Missingregister::get();
-        return response()->json(["message" => "Success", "data" => $missing], 200);
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
+
+        if ($userRole == 'admin') {
+            $data = Missingregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Missingregister::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Missingregister::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
+        }
     }
 
     /**
@@ -42,30 +59,20 @@ class MissingregisterController extends Controller
             'name' => 'required|string',
             'age' => 'nullable|numeric',
             'gender' => 'required',
-            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'address' => 'nullable',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
             'missingdate' => 'required',
-            'ppid' => 'required',
-            'psid' => 'required',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
-        if ($request->hasfile('aadhar')) {
-            $file = $request->file('aadhar');
-            $extension = $file->getClientOriginalExtension();
-            $filename = 'pp.thesupernest.com/uploads/missingregister/aadhar/' . time() . '.' . $extension;
-            $file->move('uploads/missingregister/aadhar', $filename);
-            $data['aadhar'] = $filename;
-        }
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Fireregister;
 use Validator;
+use App\Policestation;
 use Illuminate\Http\Request;
 
 class FireregisterController extends Controller
@@ -15,8 +16,25 @@ class FireregisterController extends Controller
      */
     public function index()
     {
-        $fire = Fireregister::get();
-        return response()->json(["message" => "Success", "data" => $fire], 200);
+
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $userRole = $loggedinuser->role;
+        $psid = $loggedinuser->psid;
+        $psname = Policestation::where('id', $psid)->get('psname');
+
+        if ($userRole == 'admin') {
+            $data = Fireregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($userRole == 'ps') {
+            $data = Fireregister::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+        } else if ($userRole == 'pp') {
+            $data = Fireregister::where('ppid', $uid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person.l̥"], 200);
+        }
     }
 
     /**
@@ -46,17 +64,14 @@ class FireregisterController extends Controller
             'reason' => 'nullable|string',
             'loss' => 'nullable',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
-            'ppid' => 'required',
-            'psid' => 'required',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
+        $ppid = $loggedinuser->id;
+        $psid = $loggedinuser->psid;
 
-        if ($uid != $data['ppid']) {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
-
+        $data['ppid'] = $ppid;
+        $data['psid'] = $psid;
 
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');

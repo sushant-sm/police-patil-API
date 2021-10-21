@@ -18,12 +18,14 @@ class CreateDisastersTable extends Migration
             $table->string('type');
             $table->string('subtype');
             $table->date('date');
+            $table->double('latitude')->nullable();
+            $table->double('longitude')->nullable();
             $table->integer('casuality')->nullable();
             $table->string('level')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');
-            $table->foreign('psid')->references('id')->on('policestation');
+            $table->foreign('psid')->references('id')->on('policestations');
             $table->timestamps();
         });
     }

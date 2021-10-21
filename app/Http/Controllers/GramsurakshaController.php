@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Disasterhelper;
+use App\Gramsuraksha;
 use App\Policestation;
+use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Http\Request;
 
-class DisasterhelperController extends Controller
+class GramsurakshaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,6 @@ class DisasterhelperController extends Controller
      */
     public function index()
     {
-
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
         $userRole = $loggedinuser->role;
@@ -23,13 +23,13 @@ class DisasterhelperController extends Controller
         $psname = Policestation::where('id', $psid)->get('psname');
 
         if ($userRole == 'admin') {
-            $data = Disasterhelper::get();
+            $data = Gramsuraksha::get();
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else if ($userRole == 'ps') {
-            $data = Disasterhelper::where('psid', $psid)->get();
+            $data = Gramsuraksha::where('psid', $psid)->get();
             return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
         } else if ($userRole == 'pp') {
-            $data = Disasterhelper::where('ppid', $uid)->get();
+            $data = Gramsuraksha::where('ppid', $uid)->get();
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["message" => "You are not authorized person.l̥"], 200);
@@ -67,7 +67,7 @@ class DisasterhelperController extends Controller
         $data['ppid'] = $ppid;
         $data['psid'] = $psid;
 
-        $disaster = Disasterhelper::create($data);
+        $disaster = Gramsuraksha::create($data);
 
         return response()->json(["message" => "Success", "data" => $disaster], 201);
     }
@@ -75,10 +75,10 @@ class DisasterhelperController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Disasterhelper  $disasterhelper
+     * @param  \App\Gramsuraksha  $gramsuraksha
      * @return \Illuminate\Http\Response
      */
-    public function show(Disasterhelper $disasterhelper)
+    public function show(Gramsuraksha $gramsuraksha)
     {
         //
     }
@@ -86,10 +86,10 @@ class DisasterhelperController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Disasterhelper  $disasterhelper
+     * @param  \App\Gramsuraksha  $gramsuraksha
      * @return \Illuminate\Http\Response
      */
-    public function edit(Disasterhelper $disasterhelper)
+    public function edit(Gramsuraksha $gramsuraksha)
     {
         //
     }
@@ -98,10 +98,10 @@ class DisasterhelperController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Disasterhelper  $disasterhelper
+     * @param  \App\Gramsuraksha  $gramsuraksha
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Disasterhelper $disasterhelper)
+    public function update(Request $request, Gramsuraksha $gramsuraksha)
     {
         //
     }
@@ -109,38 +109,11 @@ class DisasterhelperController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Disasterhelper  $disasterhelper
+     * @param  \App\Gramsuraksha  $gramsuraksha
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Disasterhelper $disasterhelper)
+    public function destroy(Gramsuraksha $gramsuraksha)
     {
         //
-    }
-
-    public function showbyppid($ppid)
-    {
-        $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
-
-        if ($ppid == $uid) {
-            $data = Disasterhelper::orderBy('id', 'desc')->where('ppid', $ppid)->get();
-            return response()->json(["message" => "Success", "data" => $data], 200);
-        } else {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
-    }
-
-    public function showbypsid($psid)
-    {
-
-        $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
-
-        if ($psid == $uid) {
-            $data = Disasterhelper::orderBy('id', 'desc')->where('psid', $psid)->get();
-            return response()->json(["message" => "Success", "data" => $data], 200);
-        } else {
-            return response()->json(["error" => "Your Not authorised Person"], 404);
-        }
     }
 }

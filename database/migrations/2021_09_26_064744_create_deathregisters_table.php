@@ -24,11 +24,12 @@ class CreateDeathregistersTable extends Migration
             $table->text('photo')->nullable();
             $table->string('foundaddress')->nullable();
             $table->string('causeofdeath')->nullable();
+            $table->string('date')->nullable();
             $table->integer('age')->nullable();
             $table->unsignedBigInteger('ppid');
             $table->foreign('ppid')->references('id')->on('users');
             $table->unsignedBigInteger('psid');
-            $table->foreign('psid')->references('id')->on('policestation');
+            $table->foreign('psid')->references('id')->on('policestations');
             $table->timestamps();
         });
     }

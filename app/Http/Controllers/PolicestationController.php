@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Policestation;
+use Illuminate\Http\Request;
 
 class PolicestationController extends Controller
 {
@@ -38,10 +38,7 @@ class PolicestationController extends Controller
     {
         $data = $request->validate([
             'psname' => 'required|string',
-            'email' => 'nullable',
             'address' => 'nullable',
-            'latitude' => 'nullable',
-            'longitude' => 'nullable',
         ]);
 
         $missing = Policestation::create($data);
@@ -52,10 +49,10 @@ class PolicestationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Policestation  $policestation
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Policestation $policestation)
     {
         //
     }
@@ -63,10 +60,10 @@ class PolicestationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Policestation  $policestation
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Policestation $policestation)
     {
         //
     }
@@ -75,10 +72,10 @@ class PolicestationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Policestation  $policestation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Policestation $policestation)
     {
         //
     }
@@ -86,10 +83,10 @@ class PolicestationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Policestation  $policestation
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Policestation $policestation)
     {
         //
     }
