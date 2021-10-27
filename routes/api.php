@@ -49,12 +49,14 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     // Movement Register
     Route::apiResource('/movement', 'MovementregisterController');
+    Route::get('/latestmovement', 'MovementregisterController@latest');
     Route::get('/movement/showbyppid/{ppid}', 'MovementregisterController@showbyppid');
     Route::get('/movement/showbypsid/{psid}', 'MovementregisterController@showbypsid');
 
 
     //Watch Register
     Route::apiResource('/watch', 'WatchregisterController');
+    Route::get('/latestwatch', 'WatchregisterController@latest');
     Route::get('/watch/showbyppid/{ppid}', 'WatchregisterController@showbyppid');
     Route::get('/watch/showbypsid/{psid}', 'WatchregisterController@showbypsid');
 
@@ -86,6 +88,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //Illegal work Register
     Route::apiResource('/illegalwork', 'IllegalworkregisterController');
+    Route::get('/latesillegalwork', 'IllegalworkregisterController@latest');
     Route::get('/illegalwork/showbyppid/{ppid}', 'IllegalworkregisterController@showbyppid');
     Route::get('/illegalwork/showbypsid/{psid}', 'IllegalworkregisterController@showbypsid');
 
@@ -116,5 +119,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/mandhan', 'MandhanController@index');
     Route::post('/certificate', 'CertificateController@index');
 
-    Route::apiResource('/points', 'PointsController');
+    Route::get('/top-pp', 'PointsController@index');
+    // Route::get('/points')
 });

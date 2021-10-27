@@ -82,7 +82,7 @@ class FireregisterController extends Controller
         }
 
         $fire = Fireregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $fire], 201);
     }
 

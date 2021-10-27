@@ -124,7 +124,7 @@ class ArmsregisterController extends Controller
 
         $arms = Armsregister::create($data);
 
-        app('App\Http\Controllers\PointsController')->index();
+        app('App\Http\Controllers\PointsController')->addpoint();
 
         return response()->json(["message" => "Success", "data" => $arms], 201);
     }

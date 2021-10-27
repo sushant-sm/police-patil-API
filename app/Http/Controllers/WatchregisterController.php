@@ -19,6 +19,12 @@ class WatchregisterController extends Controller
         return response()->json(["message" => "Success", "data" => $data], 200);
     }
 
+
+    public function latest()
+    {
+        $data = Watchregister::latest()->take(10)->get();
+        return response()->json(["message" => "Sucees", "data" => $data], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -82,7 +88,7 @@ class WatchregisterController extends Controller
         }
 
         $watch = Watchregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $watch], 201);
     }
 

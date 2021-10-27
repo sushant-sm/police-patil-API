@@ -82,7 +82,7 @@ class MissingregisterController extends Controller
         }
 
         $missing = Missingregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $missing], 201);
     }
 

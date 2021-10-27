@@ -71,6 +71,7 @@ class CrimeregisterController extends Controller
         $data['psid'] = $psid;
 
         $crime = Crimeregister::create($data);
+        app('App\Http\Controllers\PointsController')->addpoint();
 
         return response()->json(["message" => "Success", "data" => $crime], 201);
     }

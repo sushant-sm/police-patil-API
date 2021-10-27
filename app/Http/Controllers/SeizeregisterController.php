@@ -81,7 +81,7 @@ class SeizeregisterController extends Controller
         }
 
         $seize = Seizeregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $seize], 201);
     }
 

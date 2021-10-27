@@ -36,6 +36,12 @@ class IllegalworkregisterController extends Controller
         }
     }
 
+
+    public function latest()
+    {
+        $data = Illegalworkregister::latest()->take(10)->get();
+        return response()->json(["message" => "Sucees", "data" => $data], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -80,7 +86,7 @@ class IllegalworkregisterController extends Controller
             $data['photo'] = $filename;
         }
         $illegalwork = Illegalworkregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $illegalwork], 201);
     }
 

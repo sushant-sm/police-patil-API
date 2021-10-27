@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Points;
 use DB;
+use App\User;
 use Illuminate\Http\Request;
 
 class PointsController extends Controller
@@ -13,7 +14,7 @@ class PointsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function addpoint()
     {
         $loggedinuser = auth()->guard('api')->user();
         $ppid = $loggedinuser->id;
@@ -21,6 +22,17 @@ class PointsController extends Controller
         $a = DB::table('points')->where('ppid', $ppid)->increment('points', 1);
     }
 
+    public function index()
+    {
+        $top = Points::orderBy('points', 'DESC')->limit(10)->get('ppid');
+        $psname = $this->getpp($top);
+        return response()->json(["message" => "Sucees", "data" => $psname], 200);
+    }
+    public function getpp($ppid)
+    {
+        $data = User::whereIn('id', $ppid)->get();
+        return $data;
+    }
     /**
      * Show the form for creating a new resource.
      *

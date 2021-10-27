@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Movementregister;
 use App\Policestation;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -34,6 +35,12 @@ class MovementregisterController extends Controller
         } else {
             return response()->json(["message" => "You are not authorized person.l̥"], 200);
         }
+    }
+
+    public function latest()
+    {
+        $data = Movementregister::latest()->take(10)->get();
+        return response()->json(["message" => "Sucees", "data" => $data], 200);
     }
 
     /**
@@ -85,7 +92,7 @@ class MovementregisterController extends Controller
         }
 
         $movement = Movementregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $movement], 201);
     }
 

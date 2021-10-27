@@ -85,7 +85,7 @@ class PublicplaceregisterController extends Controller
         }
 
         $publicplace = Publicplaceregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $publicplace], 201);
     }
 

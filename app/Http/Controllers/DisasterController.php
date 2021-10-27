@@ -71,7 +71,7 @@ class DisasterController extends Controller
         $data['psid'] = $psid;
 
         $disaster = Disaster::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $disaster], 201);
     }
 

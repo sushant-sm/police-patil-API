@@ -85,7 +85,7 @@ class DeathregisterController extends Controller
         }
 
         $death = Deathregister::create($data);
-
+        app('App\Http\Controllers\PointsController')->addpoint();
         return response()->json(["message" => "Success", "data" => $death], 201);
     }
 
