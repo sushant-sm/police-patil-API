@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Kayade;
-use App\Policestation;
+use App\Points;
+use DB;
 use Illuminate\Http\Request;
 
-class KayadeController extends Controller
+class PointsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,10 @@ class KayadeController extends Controller
      */
     public function index()
     {
-        $data = Kayade::get();
-        return response()->json(["message" => "Success", "data" => $data], 200);
+        $loggedinuser = auth()->guard('api')->user();
+        $ppid = $loggedinuser->id;
+
+        $a = DB::table('points')->where('ppid', $ppid)->increment('points', 1);
     }
 
     /**
@@ -37,31 +39,16 @@ class KayadeController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => 'required|string',
-            'file' => 'nullable|mimes:pdf',
-        ]);
-
-        if ($request->hasfile('file')) {
-            $file = $request->file('file');
-            $extension = $file->getClientOriginalExtension();
-            $filename = 'pp.thesupernest.com/uploads/kayade/' . time() . '.' . $extension;
-            $file->move('uploads/kayade', $filename);
-            $data['file'] = $filename;
-        }
-
-        $kayade = Kayade::create($data);
-
-        return response()->json(["message" => "Success", "data" => $kayade], 201);
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Kayade  $kayade
+     * @param  \App\Points  $points
      * @return \Illuminate\Http\Response
      */
-    public function show(Kayade $kayade)
+    public function show(Points $points)
     {
         //
     }
@@ -69,10 +56,10 @@ class KayadeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Kayade  $kayade
+     * @param  \App\Points  $points
      * @return \Illuminate\Http\Response
      */
-    public function edit(Kayade $kayade)
+    public function edit(Points $points)
     {
         //
     }
@@ -81,10 +68,10 @@ class KayadeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Kayade  $kayade
+     * @param  \App\Points  $points
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Kayade $kayade)
+    public function update(Request $request, Points $points)
     {
         //
     }
@@ -92,10 +79,10 @@ class KayadeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Kayade  $kayade
+     * @param  \App\Points  $points
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kayade $kayade)
+    public function destroy(Points $points)
     {
         //
     }

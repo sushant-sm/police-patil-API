@@ -6,6 +6,8 @@ use App\Armsregister;
 use App\Policestation;
 use Validator;
 use File;
+use App\Points;
+use App\Http\Controllers\PointsController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +30,13 @@ class ArmsregisterController extends Controller
 
         if ($userRole == 'admin') {
             $data = Armsregister::get();
+
+            $psname = array();
+            foreach ($data as $data) {
+                $name = Policestation::where('id', $data->psid);
+                $psname[] = $name;
+            }
+
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else if ($userRole == 'ps') {
             $data = Armsregister::where('psid', $psid)->get();
@@ -38,8 +47,6 @@ class ArmsregisterController extends Controller
         } else {
             return response()->json(["message" => "You are not authorized person.l̥"], 200);
         }
-
-
 
         // $arms = Armsregister::get();
         // $psid = Armsregister::select('psid')->distinct()->get();
@@ -116,6 +123,8 @@ class ArmsregisterController extends Controller
         }
 
         $arms = Armsregister::create($data);
+
+        app('App\Http\Controllers\PointsController')->index();
 
         return response()->json(["message" => "Success", "data" => $arms], 201);
     }

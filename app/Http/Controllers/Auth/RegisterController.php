@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -54,6 +55,18 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'string', 'max:255'],
+            'mobile' => 'nullable|numeric|digits:10',
+            'address' => 'nullable|string',
+            'joindate' => 'nullable',
+            'enddate' => 'nullable',
+            'psdistance' => 'nullable',
+            'ordernumber' => 'nullable',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
+            'taluka' => 'nullable',
+            'dangerzone' => 'nullable',
+            'village' => 'nullable',
+            'psid' => 'required'
         ]);
     }
 
@@ -63,13 +76,24 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    protected function create(array $data)
+    protected function create(array $data, Request $request)
     {
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
+            'mobile' => $data['mobile'],
+            'address' => $data['address'],
+            'joindate' => $data['joindate'],
+            'enddate' => $data['enddate'],
+            'psdistance' => $data['psdistance'],
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude'],
+            'taluka' => $data['taluka'],
+            'dangerzone' => $data['dangerzone'],
+            'village' => $data['village'],
+            'ordernumber' => $data['ordernumber'],
         ]);
     }
 }

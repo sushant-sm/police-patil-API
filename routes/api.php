@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/illegalwork/showbyppid/{ppid}', 'IllegalworkregisterController@showbyppid');
     Route::get('/illegalwork/showbypsid/{psid}', 'IllegalworkregisterController@showbypsid');
 
+    Route::apiResource('/gramsuraksha', 'GramsurakshaController');
     //  }
 
 
@@ -111,4 +112,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::apiResource('/alltables', 'AlltableController');
     Route::apiResource('/useraccess', 'UseraccessController');
+
+    Route::post('/mandhan', 'MandhanController@index');
+    Route::post('/certificate', 'CertificateController@index');
+
+    Route::apiResource('/points', 'PointsController');
 });

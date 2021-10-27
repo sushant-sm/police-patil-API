@@ -15,24 +15,8 @@ class WatchregisterController extends Controller
      */
     public function index()
     {
-        $loggedinuser = auth()->guard('api')->user();
-        $uid = $loggedinuser->id;
-        $userRole = $loggedinuser->role;
-        $psid = $loggedinuser->psid;
-        $psname = Policestation::where('id', $psid)->get('psname');
-
-        if ($userRole == 'admin') {
-            $data = Watchregister::get();
-            return response()->json(["message" => "Success", "data" => $data], 200);
-        } else if ($userRole == 'ps') {
-            $data = Watchregister::where('psid', $psid)->get();
-            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
-        } else if ($userRole == 'pp') {
-            $data = Watchregister::where('ppid', $uid)->get();
-            return response()->json(["message" => "Success", "data" => $data], 200);
-        } else {
-            return response()->json(["message" => "You are not authorized person.l̥"], 200);
-        }
+        $data = Watchregister::get();
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 
     /**

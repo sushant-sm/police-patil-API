@@ -81,48 +81,38 @@ class AdduserinfoController extends Controller
         if (is_null($user)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
-
-        // $user->update($request->all());
-        // return response()->json(["message" => "User Updated Succesfully", "data" => $user], 200);
-
+        // return $user;
         $data = $request->validate([
             'name' => 'nullable|string',
             'village' => 'nullable|string',
             'mobile' => 'nullable|numeric|digits:10',
             'address' => 'nullable|string',
+            'ordernumber' => 'nullable|string',
             'joindate' => 'nullable',
             'enddate' => 'nullable',
             'psdistance' => 'nullable',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
-            'psid' => 'required',
             'taluka' => 'nullable',
-            'password' => 'required',
-            'dangerzone' => 'nullable'
+            'password' => 'nullable',
+            'dangerzone' => 'nullable',
         ]);
         // return $data;
 
-        // return response()->json(["message" => "User Updated Succesfully", "data" => $data], 200);
-        // return "he";
-        // $loggedinuser = auth()->guard('api')->user();
-        // $uid = $loggedinuser->id;
+        if ($request->password) {
+            // $pass = $request->password;
+            $data['password'] = Hash::make($data['password']);
+        }
 
-
-        // if ($uid != $data['ppid']) {
-        //     return response()->json(["error" => "Your Not authorised Person"], 404);
-        // }
-
-        $pass = $data['password'];
-
-        $data['password'] = Hash::make($pass);
-
-        $data['dangerzone'] = json_encode($data['dangerzone']);
+        if ($request->dangerzone) {
+            $data['dangerzone'] = json_encode($data['dangerzone']);
+        }
 
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
+            $filename = 'pp.thesupernest.com/uploads/police_patil/' . time() . '.' . $extension;
             $file->move('uploads/police_patil', $filename);
             $data['photo'] = $filename;
         }
