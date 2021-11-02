@@ -14,7 +14,7 @@ class SeizeregisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
@@ -23,11 +23,39 @@ class SeizeregisterController extends Controller
         $psname = Policestation::where('id', $psid)->get('psname');
 
         if ($userRole == 'admin') {
-            $data = Seizeregister::get();
-            return response()->json(["message" => "Success", "data" => $data], 200);
+
+            $type = $request->type;
+            $fromdate = $request->fromdate;
+            $todate = $request->todate;
+            $psid = $request->psid;
+
+            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
+                $data = Seizeregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
+                $data = Seizeregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else {
+                $data = Seizeregister::get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            }
         } else if ($userRole == 'ps') {
-            $data = Seizeregister::where('psid', $psid)->get();
-            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+
+            $type = $request->type;
+            $fromdate = $request->fromdate;
+            $todate = $request->todate;
+            $psid = $loggedinuser->psid;
+
+            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
+                $data = Seizeregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
+                $data = Seizeregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else {
+                $data = Seizeregister::where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            }
         } else if ($userRole == 'pp') {
             $data = Seizeregister::where('ppid', $uid)->get();
             return response()->json(["message" => "Success", "data" => $data], 200);

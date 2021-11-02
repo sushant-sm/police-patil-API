@@ -13,10 +13,24 @@ class WatchregisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Watchregister::get();
-        return response()->json(["message" => "Success", "data" => $data], 200);
+
+        $type = $request->type;
+        $fromdate = $request->fromdate;
+        $todate = $request->todate;
+        $psid = $request->psid;
+
+        if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
+            $data = Watchregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
+            $data = Watchregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            $data = Watchregister::get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        }
     }
 
 
@@ -48,7 +62,7 @@ class WatchregisterController extends Controller
             'name' => 'required|string',
             'mobile' => 'nullable|numeric|digits:10',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
-            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg,pdf',
             'address' => 'nullable',
             'tadipar_area' => 'nullable',
             'tadipar_date' => 'nullable',

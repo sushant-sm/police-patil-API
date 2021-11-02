@@ -14,7 +14,7 @@ class GramsurakshaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $loggedinuser = auth()->guard('api')->user();
         $uid = $loggedinuser->id;
@@ -27,7 +27,7 @@ class GramsurakshaController extends Controller
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else if ($userRole == 'ps') {
             $data = Gramsuraksha::where('psid', $psid)->get();
-            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+            return response()->json(["message" => "Success", "data" => $data], 200);
         } else if ($userRole == 'pp') {
             $data = Gramsuraksha::where('ppid', $uid)->get();
             return response()->json(["message" => "Success", "data" => $data], 200);

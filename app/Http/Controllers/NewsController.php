@@ -17,6 +17,12 @@ class NewsController extends Controller
         $news = News::get();
         return response()->json(["message" => "Success", "data" => $news], 200);
     }
+    public function topnews()
+    {
+        $news = News::latest()->take(10)->get();
+        return response()->json(["message" => "Success", "data" => $news], 200);
+    }
+
 
     /**
      * Show the form for creating a new resource.

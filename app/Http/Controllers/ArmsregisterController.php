@@ -11,6 +11,7 @@ use App\Http\Controllers\PointsController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Laravel\Ui\Presets\React;
 
 class ArmsregisterController extends Controller
 {
@@ -19,7 +20,7 @@ class ArmsregisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
         $loggedinuser = auth()->guard('api')->user();
@@ -29,26 +30,62 @@ class ArmsregisterController extends Controller
         $psname = Policestation::where('id', $psid)->get('psname');
 
         if ($userRole == 'admin') {
-            $data = Armsregister::get();
+            $type = $request->type;
 
-            $psname = array();
-            foreach ($data as $data) {
-                $name = Policestation::where('id', $data->psid);
-                $psname[] = $name;
+            $fromdate = $request->fromdate;
+            // $date = \Carbon\Carbon::parse($fromdate);
+            // $fromdate = $date->toDateString();
+            // $fromdate = date("Y-m-d", strtotime($fromdate));
+
+            $todate = $request->todate;
+            // $date = \Carbon\Carbon::parse($todate);
+            // $todate = $date->toDateString();
+            // $todate = date("Y-m-d", strtotime($todate));
+
+            $psid = $request->psid;
+            // $data = [$fromdate, $todate, $psid, $type];
+            // return $data;
+
+            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
+                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
+                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else {
+                $data = Armsregister::get();
+                // $psid = Armsregister::select('psid')->get();
+                // $psname = $this->getpolicename($psid);
+                // $data = (['info' => $info, 'psname' => $psname]);
+                return response()->json(["message" => "Success", "data" => $data], 200);
             }
-
-            return response()->json(["message" => "Success", "data" => $data], 200);
         } else if ($userRole == 'ps') {
-            $data = Armsregister::where('psid', $psid)->get();
-            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+
+            $type = $request->type;
+            $fromdate = $request->fromdate;
+            $todate = $request->todate;
+            $psid = $loggedinuser->psid;
+
+            // $data = [$fromdate, $todate, $psid, $type];
+            // return $data;
+
+
+            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
+                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
+                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else {
+                $data = Armsregister::where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            }
         } else if ($userRole == 'pp') {
             $data = Armsregister::where('ppid', $uid)->get();
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             return response()->json(["message" => "You are not authorized person.l̥"], 200);
         }
-
-        // $arms = Armsregister::get();
         // $psid = Armsregister::select('psid')->distinct()->get();
         // $psid = $psid;
 
@@ -60,10 +97,17 @@ class ArmsregisterController extends Controller
 
     public function getpolicename($psid)
     {
-        $data = Policestation::whereIn('id', $psid)->get(['psname']);
+        $data = Policestation::whereIn('id', $psid)->get(['id', 'psname']);
         return $data;
     }
 
+    // public function showbytype()
+    // {
+    //     $date = \Carbon\Carbon::parse($date);
+    //     $d = $date->toDateString();
+    //     $arms = Armsregister::where('created_at', 'like', $d . '%')->where('type', 'like', 'something')->get();
+    //     return $arms;
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -88,7 +132,7 @@ class ArmsregisterController extends Controller
             'type' => 'required|string',
             'name' => 'required|string',
             'mobile' => 'nullable|numeric|digits:10',
-            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg,pdf',
             'address' => 'nullable',
             'uid' => 'nullable',
             'weapon_condition' => 'nullable',

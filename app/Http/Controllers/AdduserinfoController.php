@@ -106,7 +106,7 @@ class AdduserinfoController extends Controller
         }
 
         if ($request->dangerzone) {
-            $data['dangerzone'] = json_encode($data['dangerzone']);
+            $data['dangerzone'] = json_encode($data['dangerzone'], JSON_UNESCAPED_UNICODE);
         }
 
         if ($request->hasfile('photo')) {
@@ -132,6 +132,12 @@ class AdduserinfoController extends Controller
         //
     }
 
+    public function village()
+    {
+        $data = User::distinct()->get('village');
+        return response()->json(["message" => "Succesd", "data" => $data], 200);
+    }
+
     public function showbyppid($id)
     {
         $data = User::orderBy('id', 'desc')->where('id', $id)->get();
@@ -139,5 +145,35 @@ class AdduserinfoController extends Controller
             return response()->json(["error" => "Record Not found"], 404);
         }
         return response()->json(["message" => "Success", "data" => $data], 200);
+    }
+
+    public function getallpp()
+    {
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $role = $loggedinuser->role;
+        if ($role == 'ps') {
+            $psid = $loggedinuser->psid;
+            $data = User::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else if ($role == 'admin') {
+            $data = User::where('role', 'pp')->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "No Authority"], 200);
+        }
+    }
+
+    public function getallps()
+    {
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $role = $loggedinuser->role;
+        if ($role == 'admin') {
+            $data = User::where('role', 'ps')->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "No Authority"], 200);
+        }
     }
 }

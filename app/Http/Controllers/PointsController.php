@@ -19,7 +19,13 @@ class PointsController extends Controller
         $loggedinuser = auth()->guard('api')->user();
         $ppid = $loggedinuser->id;
 
-        $a = DB::table('points')->where('ppid', $ppid)->increment('points', 1);
+        if (Points::where('ppid', $ppid)->exists()) {
+            $a = DB::table('points')->where('ppid', $ppid)->increment('points', 1);
+        } else {
+            $data['ppid'] = $ppid;
+            $data['points'] = 1;
+            Points::create($data);
+        }
     }
 
     public function index()

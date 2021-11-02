@@ -27,10 +27,9 @@ Route::post('adduser', 'AuthController@register');
 Route::group(['middleware' => ['auth:api']], function () {
 
     Route::apiResource('/user', 'AdduserinfoController');
-    Route::get('/api/user/{id}', 'AdduserinfoController@showbyid');
-
-    Route::apiResource('/useraccess', 'UseraccessController');
-    Route::post('/useraccesstable/{user_id}', 'UseraccessController@useraccesstable');
+    Route::get('/village', 'AdduserinfoController@village');
+    Route::get('/pp', 'AdduserinfoController@getallpp');
+    Route::get('/ps', 'AdduserinfoController@getallps');
 
     Route::apiResource('/policestation', 'PolicestationController');
 
@@ -38,6 +37,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     //  {
 
     //Arms Register
+    // Route::get('/arms/{type?}/{fromdate?}/{todate?}/{psid?}', 'ArmsregisterController@showbytype');
     Route::apiResource('/arms', 'ArmsregisterController');
     Route::get('/arms/showbyppid/{ppid}', 'ArmsregisterController@showbyppid');
     Route::get('/arms/showbypsid/{psid}', 'ArmsregisterController@showbypsid');
@@ -88,15 +88,16 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //Illegal work Register
     Route::apiResource('/illegalwork', 'IllegalworkregisterController');
-    Route::get('/latesillegalwork', 'IllegalworkregisterController@latest');
+    Route::get('/latestillegalwork', 'IllegalworkregisterController@latest');
     Route::get('/illegalwork/showbyppid/{ppid}', 'IllegalworkregisterController@showbyppid');
     Route::get('/illegalwork/showbypsid/{psid}', 'IllegalworkregisterController@showbypsid');
 
     Route::apiResource('/gramsuraksha', 'GramsurakshaController');
     //  }
 
-
+    Route::get('topnews', 'NewsController@topnews');
     Route::apiResource('/news', 'NewsController');
+
     Route::apiResource('/alert', 'AlertController');
 
     Route::apiResource('/kayade', 'KayadeController');

@@ -13,7 +13,7 @@ class DeathregisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
         $loggedinuser = auth()->guard('api')->user();
@@ -23,11 +23,38 @@ class DeathregisterController extends Controller
         $psname = Policestation::where('id', $psid)->get('psname');
 
         if ($userRole == 'admin') {
-            $data = Deathregister::get();
-            return response()->json(["message" => "Success", "data" => $data], 200);
+            $type = $request->type;
+            $fromdate = $request->fromdate;
+            $todate = $request->todate;
+            $psid = $request->psid;
+
+            if ($fromdate != NULL and $todate != NULL and $psid != NULL) {
+                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else if ($fromdate != NULL or $todate != NULL or $psid != NULL) {
+                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else {
+                $data = Deathregister::get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            }
         } else if ($userRole == 'ps') {
-            $data = Deathregister::where('psid', $psid)->get();
-            return response()->json(["message" => "Success", "data" => $data, "psname" => $psname], 200);
+
+            $type = $request->type;
+            $fromdate = $request->fromdate;
+            $todate = $request->todate;
+            $psid = $loggedinuser->psid;
+
+            if ($fromdate != NULL and $todate != NULL and $psid != NULL) {
+                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else if ($fromdate != NULL or $todate != NULL or $psid != NULL) {
+                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            } else {
+                $data = Deathregister::where('psid', $psid)->get();
+                return response()->json(["message" => "Success", "data" => $data], 200);
+            }
         } else if ($userRole == 'pp') {
             $data = Deathregister::where('ppid', $uid)->get();
             return response()->json(["message" => "Success", "data" => $data], 200);
