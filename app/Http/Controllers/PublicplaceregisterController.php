@@ -97,7 +97,7 @@ class PublicplaceregisterController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource. this is excel branch
+     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
