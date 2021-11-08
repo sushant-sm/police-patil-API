@@ -146,7 +146,7 @@ class AdduserinfoController extends Controller
 
     public function village()
     {
-        $data = User::where('role', 'pp')->get('village');
+        $data = User::where('role', 'pp')->select('id', 'village')->get();
         return response()->json(["message" => "Success", "data" => $data], 200);
     }
 
