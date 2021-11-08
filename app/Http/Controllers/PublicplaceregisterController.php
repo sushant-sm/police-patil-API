@@ -97,7 +97,7 @@ class PublicplaceregisterController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource. s
+     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
