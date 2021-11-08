@@ -23,7 +23,7 @@ class CreateMovementregistersTable extends Migration
             $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
             $table->dateTime('datetime')->nullable();
-            $table->boolean('essue')->nullable();
+            $table->boolean('issue')->nullable();
             $table->integer('attendance')->nullable();
             $table->text('description')->nullable();
             $table->text('photo')->nullable();
