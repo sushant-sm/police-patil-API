@@ -24,38 +24,18 @@ class DisastertoolsController extends Controller
 
         if ($userRole == 'admin') {
 
-            $type = $request->type;
-            $fromdate = $request->fromdate;
-            $todate = $request->todate;
             $psid = $request->psid;
 
-            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Disastertools::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Disastertools::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            if ($psid != NULL) {
+                $data = Disastertools::where('psid', $psid)->get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             } else {
                 $data = Disastertools::get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             }
         } else if ($userRole == 'ps') {
-
-            $type = $request->type;
-            $fromdate = $request->fromdate;
-            $todate = $request->todate;
-            $psid = $loggedinuser->psid;
-
-            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Disastertools::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Disastertools::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else {
-                $data = Disastertools::where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            }
+            $data = Disastertools::where('psid', $psid)->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
         } else if ($userRole == 'pp') {
             $data = Disastertools::where('ppid', $uid)->get();
             return response()->json(["message" => "Success", "data" => $data], 200);

@@ -30,8 +30,11 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/village', 'AdduserinfoController@village');
     Route::get('/pp', 'AdduserinfoController@getallpp');
     Route::get('/ps', 'AdduserinfoController@getallps');
+    Route::get('/dangerzone', 'AdduserinfoController@dangerzone');
+    Route::post('/version', 'VersionController@index');
 
     Route::apiResource('/policestation', 'PolicestationController');
+
 
     //Register Section
     //  {

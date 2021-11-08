@@ -20,36 +20,67 @@ class DeathregisterController extends Controller
         $uid = $loggedinuser->id;
         $userRole = $loggedinuser->role;
         $psid = $loggedinuser->psid;
-        $psname = Policestation::where('id', $psid)->get('psname');
 
         if ($userRole == 'admin') {
-            $type = $request->type;
-            $fromdate = $request->fromdate;
-            $todate = $request->todate;
-            $psid = $request->psid;
 
-            if ($fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            $q = $request->query();
+            if ($q != NULL) {
+                $fromdate = $request->fromdate;
+                $todate = $request->todate;
+                $my_query = Deathregister::query();
+                if ($fromdate != NULL and $todate != NULL) {
+                    if (!empty($q['isknown'])) {
+                        $my_query->where('isknown', $q['isknown']);
+                    }
+                    if (!empty($q['gender'])) {
+                        $my_query->where('gender', $q['gender']);
+                    }
+                    if (!empty($q['psid'])) {
+                        $my_query->where('psid', $q['psid']);
+                    }
+                    if (!empty($q['ppid'])) {
+                        $my_query->where('ppid', $q['ppid']);
+                    }
+                    $my_query->whereBetween('date', [$fromdate, $todate]);
+                } else {
+                    foreach ($request->query() as $key => $value) {
+                        $my_query->where($key, $value);
+                    }
+                }
+                $data = $my_query->get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             } else {
                 $data = Deathregister::get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             }
         } else if ($userRole == 'ps') {
-
-            $type = $request->type;
-            $fromdate = $request->fromdate;
-            $todate = $request->todate;
             $psid = $loggedinuser->psid;
-
-            if ($fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Deathregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            $q = $request->query();
+            if ($q != NULL) {
+                $fromdate = $request->fromdate;
+                $todate = $request->todate;
+                $my_query = Deathregister::query();
+                if ($fromdate != NULL and $todate != NULL) {
+                    if (!empty($q['isknown'])) {
+                        $my_query->where('isknown', $q['isknown']);
+                    }
+                    if (!empty($q['gender'])) {
+                        $my_query->where('gender', $q['gender']);
+                    }
+                    if (!empty($psid)) {
+                        $my_query->where('psid', $psid);
+                    }
+                    if (!empty($q['ppid'])) {
+                        $my_query->where('ppid', $q['ppid']);
+                    }
+                    $my_query->whereBetween('date', [$fromdate, $todate]);
+                } else {
+                    foreach ($request->query() as $key => $value) {
+                        $my_query->where($key, $value);
+                    }
+                    $my_query->where('psid', $psid);
+                }
+                $data = $my_query->get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             } else {
                 $data = Deathregister::where('psid', $psid)->get();

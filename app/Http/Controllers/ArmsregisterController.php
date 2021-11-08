@@ -30,51 +30,60 @@ class ArmsregisterController extends Controller
         $psname = Policestation::where('id', $psid)->get('psname');
 
         if ($userRole == 'admin') {
-            $type = $request->type;
 
-            $fromdate = $request->fromdate;
-            // $date = \Carbon\Carbon::parse($fromdate);
-            // $fromdate = $date->toDateString();
-            // $fromdate = date("Y-m-d", strtotime($fromdate));
-
-            $todate = $request->todate;
-            // $date = \Carbon\Carbon::parse($todate);
-            // $todate = $date->toDateString();
-            // $todate = date("Y-m-d", strtotime($todate));
-
-            $psid = $request->psid;
-            // $data = [$fromdate, $todate, $psid, $type];
-            // return $data;
-
-            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            $q = $request->query();
+            if ($q != NULL) {
+                $fromdate = $request->fromdate;
+                $todate = $request->todate;
+                $my_query = Armsregister::query();
+                if ($fromdate != NULL and $todate != NULL) {
+                    if (!empty($q['type'])) {
+                        $my_query->where('type', $q['type']);
+                    }
+                    if (!empty($q['psid'])) {
+                        $my_query->where('psid', $q['psid']);
+                    }
+                    if (!empty($q['ppid'])) {
+                        $my_query->where('ppid', $q['ppid']);
+                    }
+                    $my_query->whereBetween('created_at', [$fromdate, $todate]);
+                } else {
+                    foreach ($request->query() as $key => $value) {
+                        $my_query->where($key, $value);
+                    }
+                }
+                $data = $my_query->get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             } else {
                 $data = Armsregister::get();
-                // $psid = Armsregister::select('psid')->get();
-                // $psname = $this->getpolicename($psid);
-                // $data = (['info' => $info, 'psname' => $psname]);
                 return response()->json(["message" => "Success", "data" => $data], 200);
             }
         } else if ($userRole == 'ps') {
 
-            $type = $request->type;
+            $psid = $loggedinuser->psid;
             $fromdate = $request->fromdate;
             $todate = $request->todate;
-            $psid = $loggedinuser->psid;
-
-            // $data = [$fromdate, $todate, $psid, $type];
-            // return $data;
-
-
-            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Armsregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            $q = $request->query();
+            if ($q != NULL) {
+                $my_query = Armsregister::query();
+                if ($fromdate != NULL and $todate != NULL) {
+                    if (!empty($q['type'])) {
+                        $my_query->where('type', $q['type']);
+                    }
+                    if (!empty($psid)) {
+                        $my_query->where('psid', $psid);
+                    }
+                    if (!empty($q['ppid'])) {
+                        $my_query->where('ppid', $q['ppid']);
+                    }
+                    $my_query->whereBetween('created_at', [$fromdate, $todate]);
+                } else {
+                    foreach ($request->query() as $key => $value) {
+                        $my_query->where($key, $value);
+                    }
+                    $my_query->where('psid', $psid);
+                }
+                $data = $my_query->get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             } else {
                 $data = Armsregister::where('psid', $psid)->get();

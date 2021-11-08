@@ -25,16 +25,31 @@ class MovementregisterController extends Controller
 
         if ($userRole == 'admin') {
 
-            $type = $request->type;
-            $fromdate = $request->fromdate;
-            $todate = $request->todate;
-            $psid = $request->psid;
-
-            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Movementregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Movementregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            $q = $request->query();
+            if ($q != NULL) {
+                $fromdate = $request->fromdate;
+                $todate = $request->todate;
+                $my_query = Movementregister::query();
+                if ($fromdate != NULL and $todate != NULL) {
+                    if (!empty($q['type'])) {
+                        $my_query->where('type', $q['type']);
+                    }
+                    if (!empty($q['essue'])) {
+                        $my_query->where('essue', $q['essue']);
+                    }
+                    if (!empty($q['psid'])) {
+                        $my_query->where('psid', $q['psid']);
+                    }
+                    if (!empty($q['ppid'])) {
+                        $my_query->where('ppid', $q['ppid']);
+                    }
+                    $my_query->whereBetween('created_at', [$fromdate, $todate]);
+                } else {
+                    foreach ($request->query() as $key => $value) {
+                        $my_query->where($key, $value);
+                    }
+                }
+                $data = $my_query->get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             } else {
                 $data = Movementregister::get();
@@ -42,16 +57,33 @@ class MovementregisterController extends Controller
             }
         } else if ($userRole == 'ps') {
 
-            $type = $request->type;
+            $psid = $loggedinuser->psid;
             $fromdate = $request->fromdate;
             $todate = $request->todate;
-            $psid = $loggedinuser->psid;
-
-            if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
-                $data = Movementregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-                return response()->json(["message" => "Success", "data" => $data], 200);
-            } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
-                $data = Movementregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+            $q = $request->query();
+            if ($q != NULL) {
+                $my_query = Movementregister::query();
+                if ($fromdate != NULL and $todate != NULL) {
+                    if (!empty($q['type'])) {
+                        $my_query->where('type', $q['type']);
+                    }
+                    if (!empty($q['essue'])) {
+                        $my_query->where('essue', $q['essue']);
+                    }
+                    if (!empty($psid)) {
+                        $my_query->where('psid', $psid);
+                    }
+                    if (!empty($q['ppid'])) {
+                        $my_query->where('ppid', $q['ppid']);
+                    }
+                    $my_query->whereBetween('created_at', [$fromdate, $todate]);
+                } else {
+                    foreach ($request->query() as $key => $value) {
+                        $my_query->where($key, $value);
+                    }
+                    $my_query->where('psid', $psid);
+                }
+                $data = $my_query->get();
                 return response()->json(["message" => "Success", "data" => $data], 200);
             } else {
                 $data = Movementregister::where('psid', $psid)->get();

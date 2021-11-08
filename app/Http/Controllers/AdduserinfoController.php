@@ -53,8 +53,20 @@ class AdduserinfoController extends Controller
         if (is_null($user)) {
             return response()->json(["error" => "Record Not found"], 404);
         }
+        // return json_decode($user['dangerzone']);
+        // $user['dangerzone'] = json_decode($user['dangerzone']);
         return response()->json(["message" => "Success", "data" => $user], 200);
     }
+
+    public function dangerzone()
+    {
+        $loggedinuser = auth()->guard('api')->user();
+        $id = $loggedinuser->id;
+        $user = User::find($id);
+        $data = json_decode($user['dangerzone']);
+        return response()->json(["message" => "Success", "data" => $data], 200);
+    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -105,9 +117,9 @@ class AdduserinfoController extends Controller
             $data['password'] = Hash::make($data['password']);
         }
 
-        if ($request->dangerzone) {
-            $data['dangerzone'] = json_encode($data['dangerzone'], JSON_UNESCAPED_UNICODE);
-        }
+        // if ($request->dangerzone) {
+        //     $data['dangerzone'] = json_encode($data['dangerzone'], JSON_UNESCAPED_UNICODE);
+        // }
 
         if ($request->hasfile('photo')) {
             $file = $request->file('photo');
@@ -134,8 +146,8 @@ class AdduserinfoController extends Controller
 
     public function village()
     {
-        $data = User::distinct()->get('village');
-        return response()->json(["message" => "Succesd", "data" => $data], 200);
+        $data = User::where('role', 'pp')->get('village');
+        return response()->json(["message" => "Success", "data" => $data], 200);
     }
 
     public function showbyppid($id)

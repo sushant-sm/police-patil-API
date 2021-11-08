@@ -16,16 +16,28 @@ class WatchregisterController extends Controller
     public function index(Request $request)
     {
 
-        $type = $request->type;
-        $fromdate = $request->fromdate;
-        $todate = $request->todate;
-        $psid = $request->psid;
-
-        if ($type != NULL and $fromdate != NULL and $todate != NULL and $psid != NULL) {
-            $data = Watchregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->where('type', $type)->where('psid', $psid)->get();
-            return response()->json(["message" => "Success", "data" => $data], 200);
-        } else if ($type != NULL or $fromdate != NULL or $todate != NULL or $psid != NULL) {
-            $data = Watchregister::whereBetween('created_at', [$fromdate . '%', $todate . '%'])->orWhere('type', $type)->orWhere('psid', $psid)->get();
+        $q = $request->query();
+        if ($q != NULL) {
+            $fromdate = $request->fromdate;
+            $todate = $request->todate;
+            $my_query = Watchregister::query();
+            if ($fromdate != NULL and $todate != NULL) {
+                if (!empty($q['type'])) {
+                    $my_query->where('type', $q['type']);
+                }
+                if (!empty($q['psid'])) {
+                    $my_query->where('psid', $q['psid']);
+                }
+                if (!empty($q['ppid'])) {
+                    $my_query->where('ppid', $q['ppid']);
+                }
+                $my_query->whereBetween('created_at', [$fromdate, $todate]);
+            } else {
+                foreach ($request->query() as $key => $value) {
+                    $my_query->where($key, $value);
+                }
+            }
+            $data = $my_query->get();
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
             $data = Watchregister::get();
