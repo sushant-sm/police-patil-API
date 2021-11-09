@@ -151,7 +151,8 @@ class AdduserinfoController extends Controller
             $data = User::where('role', 'pp')->where('psid', $psid)->select('id', 'village')->get();
             return response()->json(["message" => "Success", "data" => $data], 200);
         } else {
-            return response()->json(["message" => "valid psid required"], 200);
+            $data = User::where('role', 'pp')->select('id', 'village')->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
         }
     }
 
