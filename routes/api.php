@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     // Route::get('/arms/{type?}/{fromdate?}/{todate?}/{psid?}', 'ArmsregisterController@showbytype');
     Route::apiResource('/arms', 'ArmsregisterController');
     Route::get('/arms/showbyppid/{ppid}', 'ArmsregisterController@showbyppid');
+    Route::get('/arms/export', 'ArmsregisterController@exportIntoExcel');
     Route::get('/arms/showbypsid/{psid}', 'ArmsregisterController@showbypsid');
 
     //Seize Register

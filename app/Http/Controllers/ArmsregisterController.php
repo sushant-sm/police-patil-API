@@ -7,6 +7,8 @@ use App\Policestation;
 use Validator;
 use File;
 use App\Points;
+use Excel;
+use App\Exports\ArmsExport;
 use App\Http\Controllers\PointsController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -20,6 +22,12 @@ class ArmsregisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function exportIntoExcel()
+    {
+        return Excel::download(new ArmsExport, 'armsdata.xlsx');
+    }
+
+
     public function index(Request $request)
     {
 
