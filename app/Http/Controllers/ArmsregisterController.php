@@ -112,6 +112,11 @@ class ArmsregisterController extends Controller
         // return response()->json(["message" => "Success", "data" => $arms, "psname" => $psname], 200);
     }
 
+    public function index1()
+    {
+        return Armsregister::where('id', 1)->where('type', 'something')->get();
+    }
+
     public function getpolicename($psid)
     {
         $data = Policestation::whereIn('id', $psid)->get(['id', 'psname']);

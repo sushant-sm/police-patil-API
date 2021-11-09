@@ -27,6 +27,7 @@ class ArmsExport implements FromCollection, WithHeadings
     {
         // return Armsregister::select('id', 'type', 'name', 'mobile', 'aadhar')->get()->toArray();
         // return Armsregister::get();
-        return collect(ArmsregisterController::index());
+        // return collect(ArmsregisterController->index());
+        return app('App\Http\Controllers\ArmsregisterController')->index1();
     }
 }

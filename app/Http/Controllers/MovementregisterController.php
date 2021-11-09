@@ -34,8 +34,8 @@ class MovementregisterController extends Controller
                     if (!empty($q['type'])) {
                         $my_query->where('type', $q['type']);
                     }
-                    if (!empty($q['essue'])) {
-                        $my_query->where('essue', $q['essue']);
+                    if (!empty($q['issue'])) {
+                        $my_query->where('issue', $q['issue']);
                     }
                     if (!empty($q['psid'])) {
                         $my_query->where('psid', $q['psid']);
@@ -67,8 +67,8 @@ class MovementregisterController extends Controller
                     if (!empty($q['type'])) {
                         $my_query->where('type', $q['type']);
                     }
-                    if (!empty($q['essue'])) {
-                        $my_query->where('essue', $q['essue']);
+                    if (!empty($q['issue'])) {
+                        $my_query->where('issue', $q['issue']);
                     }
                     if (!empty($psid)) {
                         $my_query->where('psid', $psid);
@@ -130,7 +130,7 @@ class MovementregisterController extends Controller
             'movement_type' => 'nullable',
             'leader' => 'nullable',
             'datetime' => 'nullable',
-            'essue' => 'nullable|boolean',
+            'issue' => 'nullable|boolean',
             'attendance' => 'nullable|integer',
             'description' => 'nullable',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
