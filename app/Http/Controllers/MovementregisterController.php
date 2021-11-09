@@ -34,8 +34,8 @@ class MovementregisterController extends Controller
                     if (!empty($q['type'])) {
                         $my_query->where('type', $q['type']);
                     }
-                    if (!empty($q['essue'])) {
-                        $my_query->where('essue', $q['essue']);
+                    if (!empty($q['issue'])) {
+                        $my_query->where('issue', $q['issue']);
                     }
                     if (!empty($q['psid'])) {
                         $my_query->where('psid', $q['psid']);
