@@ -144,10 +144,15 @@ class AdduserinfoController extends Controller
         //
     }
 
-    public function village()
+    public function village(Request $request)
     {
-        $data = User::where('role', 'pp')->select('id', 'village')->get();
-        return response()->json(["message" => "Success", "data" => $data], 200);
+        $psid = $request->psid;
+        if (!empty($psid)) {
+            $data = User::where('role', 'pp')->where('psid', $psid)->select('id', 'village')->get();
+            return response()->json(["message" => "Success", "data" => $data], 200);
+        } else {
+            return response()->json(["message" => "valid psid required"], 200);
+        }
     }
 
     public function showbyppid($id)

@@ -21,8 +21,8 @@ use Carbon\Carbon;
 Route::prefix('/user')->group(function () {
     Route::post('/login', 'api\LoginController@login');
 });
-Route::post('/admin/login', 'AdminController@login');
-Route::apiResource('/admin', 'AdminController');
+
+Route::get('/baseurl', 'BaseurlController@index');
 Route::post('adduser', 'AuthController@register');
 Route::group(['middleware' => ['auth:api']], function () {
 
