@@ -122,6 +122,7 @@ class IllegalworkregisterController extends Controller
             'address' => 'nullable|string',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -177,9 +178,44 @@ class IllegalworkregisterController extends Controller
      * @param  \App\Illegalworkregister  $illegalworkregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Illegalworkregister $illegalworkregister)
+    public function update(Request $request)
     {
-        //
+        $illegalworkid = $request->illegalworkid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Illegalworkregister::where('id', $illegalworkid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Illegalworkregister::where('id', $illegalworkid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'type' => 'nullable|string',
+                'name' => 'nullable|string',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'vehicle_no' => 'nullable',
+                'address' => 'nullable|string',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/illegalworkregister/' . time() . '.' . $extension;
+                $file->move('uploads/illegalworkregister', $filename);
+                $data['photo'] = $filename;
+            }
+
+            $illegal = Illegalworkregister::where('id', $illegalworkid)->update($data);
+            return response()->json(["message" => "Success", "data" => $illegal], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -188,9 +224,26 @@ class IllegalworkregisterController extends Controller
      * @param  \App\Illegalworkregister  $illegalworkregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Illegalworkregister $illegalworkregister)
+    public function destroy(Request $request)
     {
-        //
+        $illegalworkid = $request->illegalworkid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Illegalworkregister::where('id', $illegalworkid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Illegalworkregister::where('id', $illegalworkid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $illegal = Illegalworkregister::find($illegalworkid);
+            $illegal->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)

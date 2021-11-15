@@ -113,6 +113,7 @@ class FireregisterController extends Controller
             'reason' => 'nullable|string',
             'loss' => 'nullable',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -165,9 +166,45 @@ class FireregisterController extends Controller
      * @param  \App\Fireregister  $fireregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Fireregister $fireregister)
+    public function update(Request $request)
     {
-        //
+        $fireid = $request->fireid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Fireregister::where('id', $fireid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Fireregister::where('id', $fireid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'address' => 'nullable|string',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'date' => 'nullable',
+                'time' => 'nullable',
+                'reason' => 'nullable|string',
+                'loss' => 'nullable',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/fireregister/' . time() . '.' . $extension;
+                $file->move('uploads/fireregister', $filename);
+                $data['photo'] = $filename;
+            }
+
+            $fire = Fireregister::where('id', $fireid)->update($data);
+            return response()->json(["message" => "Success", "data" => $fire], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -176,9 +213,26 @@ class FireregisterController extends Controller
      * @param  \App\Fireregister  $fireregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Fireregister $fireregister)
+    public function destroy(Request $request)
     {
-        //
+        $fireid = $request->fireid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Fireregister::where('id', $fireid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Fireregister::where('id', $fireid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $fire = Fireregister::find($fireid);
+            $fire->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)

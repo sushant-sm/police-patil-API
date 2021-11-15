@@ -124,6 +124,7 @@ class DeathregisterController extends Controller
             'foundaddress' => 'nullable',
             'causeofdeath' => 'nullable',
             'age' => 'nullable|numeric',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -180,9 +181,48 @@ class DeathregisterController extends Controller
      * @param  \App\Deathregister  $deathregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Deathregister $deathregister)
+    public function update(Request $request)
     {
-        //
+        $deathid = $request->deathid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Deathregister::where('id', $deathid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Deathregister::where('id', $deathid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'isknown' => 'nullable',
+                'name' => 'nullable|string',
+                'gender' => 'nullable',
+                'address' => 'nullable|string',
+                'date' => 'nullable',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'foundaddress' => 'nullable',
+                'causeofdeath' => 'nullable',
+                'age' => 'nullable|numeric',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/deathregister/' . time() . '.' . $extension;
+                $file->move('uploads/deathregister', $filename);
+                $data['photo'] = $filename;
+            }
+
+            $death = Deathregister::where('id', $deathid)->update($data);
+            return response()->json(["message" => "Success", "data" => $death], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -191,9 +231,26 @@ class DeathregisterController extends Controller
      * @param  \App\Deathregister  $deathregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Deathregister $deathregister)
+    public function destroy(Request $request)
     {
-        //
+        $deathid = $request->deathid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Deathregister::where('id', $deathid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Deathregister::where('id', $deathid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $death = Deathregister::find($deathid);
+            $death->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)

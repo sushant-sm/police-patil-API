@@ -134,6 +134,7 @@ class MovementregisterController extends Controller
             'attendance' => 'nullable|integer',
             'description' => 'nullable',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -189,9 +190,49 @@ class MovementregisterController extends Controller
      * @param  \App\Movementregister  $movementregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Movementregister $movementregister)
+    public function update(Request $request)
     {
-        //
+        $movementid = $request->movementid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Movementregister::where('id', $movementid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Movementregister::where('id', $movementid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'type' => 'nullable|string',
+                'subtype' => 'nullable|string',
+                'address' => 'nullable',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'movement_type' => 'nullable',
+                'leader' => 'nullable',
+                'datetime' => 'nullable',
+                'issue' => 'nullable|boolean',
+                'attendance' => 'nullable|integer',
+                'description' => 'nullable',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/movementregister/' . time() . '.' . $extension;
+                $file->move('uploads/movementregister', $filename);
+                $data['photo'] = $filename;
+            }
+
+            $movement = Movementregister::where('id', $movementid)->update($data);
+            return response()->json(["message" => "Success", "data" => $movement], 201);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 201);
+        }
     }
 
     /**
@@ -200,9 +241,26 @@ class MovementregisterController extends Controller
      * @param  \App\Movementregister  $movementregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Movementregister $movementregister)
+    public function destroy(Request $request)
     {
-        //
+        $movementid = $request->movementid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Movementregister::where('id', $movementid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Movementregister::where('id', $movementid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $movement = Movementregister::find($movementid);
+            $movement->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)

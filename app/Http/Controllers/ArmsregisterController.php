@@ -150,6 +150,7 @@ class ArmsregisterController extends Controller
             'licencenumber' => 'nullable',
             'validity' => 'nullable',
             'licencephoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -212,9 +213,56 @@ class ArmsregisterController extends Controller
      * @param  \App\Armsregister  $armsregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Armsregister $armsregister)
+    public function update(Request $request)
     {
-        //
+        $armsid = $request->armsid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Armsregister::where('id', $armsid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Armsregister::where('id', $armsid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'type' => 'nullable|string',
+                'name' => 'nullable|string',
+                'mobile' => 'nullable|numeric|digits:10',
+                'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg,pdf',
+                'address' => 'nullable',
+                'uid' => 'nullable',
+                'weapon_condition' => 'nullable',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'licencenumber' => 'nullable',
+                'validity' => 'nullable',
+                'licencephoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('aadhar')) {
+                $file = $request->file('aadhar');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/armsregister/aadhar/' . time() . '.' . $extension;
+                $file->move('uploads/armsregister/aadhar', $filename);
+                $data['aadhar'] = $filename;
+            }
+            if ($request->hasfile('licencephoto')) {
+                $file = $request->file('licencephoto');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/armsregister/licencephoto/' . time() . '.' . $extension;
+                $file->move('uploads/armsregister/LicencePhoto', $filename);
+                $data['licencephoto'] = $filename;
+            }
+
+            $arms = Armsregister::where('id', $armsid)->update($data);
+            return response()->json(["message" => "Success", "data" => $arms], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -223,11 +271,27 @@ class ArmsregisterController extends Controller
      * @param  \App\Armsregister  $armsregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Armsregister $armsregister)
+    public function destroy(Request $request)
     {
-        //
-    }
+        $armsid = $request->armsid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Armsregister::where('id', $armsid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
 
+        $getpsid = Armsregister::where('id', $armsid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $arm = Armsregister::find($armsid);
+            $arm->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
+    }
 
 
     public function showbyppid($ppid)

@@ -82,6 +82,7 @@ class WatchregisterController extends Controller
             'longitude' => 'nullable',
             'description' => 'nullable|string',
             'otherphoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -151,9 +152,63 @@ class WatchregisterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $watchid = $request->watchid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Watchregister::where('id', $watchid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Watchregister::where('id', $watchid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'type' => 'nullable|string',
+                'name' => 'nullable|string',
+                'mobile' => 'nullable|numeric|digits:10',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'aadhar' => 'nullable|image|mimes:jpg,png,jpeg,svg,pdf',
+                'address' => 'nullable',
+                'tadipar_area' => 'nullable',
+                'tadipar_date' => 'nullable',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'description' => 'nullable|string',
+                'otherphoto' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('aadhar')) {
+                $file = $request->file('aadhar');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/watchregister/aadhar/' . time() . '.' . $extension;
+                $file->move('uploads/watchregister/aadhar', $filename);
+                $data['aadhar'] = $filename;
+            }
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/watchregister/photo/' . time() . '.' . $extension;
+                $file->move('uploads/watchregister/photo', $filename);
+                $data['photo'] = $filename;
+            }
+            if ($request->hasfile('otherphoto')) {
+                $file = $request->file('otherphoto');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/watchregister/otherphoto/' . time() . '.' . $extension;
+                $file->move('uploads/watchregister/otherphoto', $filename);
+                $data['otherphoto'] = $filename;
+            }
+
+            $watch = Watchregister::where('id', $watchid)->update($data);
+            return response()->json(["message" => "Success", "data" => $watch], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -162,9 +217,26 @@ class WatchregisterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $watchid = $request->watchid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Watchregister::where('id', $watchid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Watchregister::where('id', $watchid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $watch = Watchregister::find($watchid);
+            $watch->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)

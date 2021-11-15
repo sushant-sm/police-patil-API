@@ -118,6 +118,7 @@ class MissingregisterController extends Controller
             'latitude' => 'nullable',
             'longitude' => 'nullable',
             'missingdate' => 'required',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -173,9 +174,46 @@ class MissingregisterController extends Controller
      * @param  \App\Missingregister  $missingregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Missingregister $missingregister)
+    public function update(Request $request)
     {
-        //
+        $missingid = $request->missingid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Missingregister::where('id', $missingid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Missingregister::where('id', $missingid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'isadult' => 'nullable',
+                'name' => 'nullable|string',
+                'age' => 'nullable|numeric',
+                'gender' => 'nullable',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'address' => 'nullable',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'missingdate' => 'nullable',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/missingregister/photo/' . time() . '.' . $extension;
+                $file->move('uploads/missingregister/photo', $filename);
+                $data['photo'] = $filename;
+            }
+
+            $missing = Missingregister::where('id', $missingid)->update($data);
+            return response()->json(["message" => "Success", "data" => $missing], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -184,10 +222,30 @@ class MissingregisterController extends Controller
      * @param  \App\Missingregister  $missingregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Missingregister $missingregister)
+
+    public function destroy(Request $request)
     {
-        //
+        $missingid = $request->missingid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Missingregister::where('id', $missingid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Missingregister::where('id', $missingid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $missing = Missingregister::find($missingid);
+            $missing->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
+
+
     public function showbyppid($ppid)
     {
         $loggedinuser = auth()->guard('api')->user();

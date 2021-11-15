@@ -23,10 +23,11 @@ class AuthController extends Controller
             'email'    => 'unique:users|required',
             'password' => 'required',
             'role' => 'required',
-            'psid' => 'nullable'
+            'psid' => 'nullable',
+            'village' => 'nullable',
         ];
 
-        $input     = $request->only('name', 'email', 'password', 'role', 'psid');
+        $input     = $request->only('name', 'email', 'password', 'role', 'psid', 'village');
         $validator = Validator::make($input, $rules);
 
         if ($validator->fails()) {
@@ -37,7 +38,8 @@ class AuthController extends Controller
         $password = $request->password;
         $role = $request->role;
         $psid = $request->psid;
-        $user     = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($password), 'role' => $role, 'psid' => $psid]);
+        $village = $request->village;
+        $user     = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($password), 'role' => $role, 'psid' => $psid, 'village' => $village]);
         return response()->json(["message" => "Success", "data" => $user], 201);
     }
     public function index()

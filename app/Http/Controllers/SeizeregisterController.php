@@ -116,6 +116,7 @@ class SeizeregisterController extends Controller
             'date' => 'required|date',
             'description' => 'nullable',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -172,9 +173,44 @@ class SeizeregisterController extends Controller
      * @param  \App\Seizeregister  $seizeregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Seizeregister $seizeregister)
+    public function update(Request $request)
     {
-        //
+        $seizeid = $request->seizeid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Seizeregister::where('id', $seizeid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Seizeregister::where('id', $seizeid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'type' => 'nullable|string',
+                'address' => 'nullable|string',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'date' => 'nullable|date',
+                'description' => 'nullable',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/seizeregister/' . time() . '.' . $extension;
+                $file->move('uploads/seizeregister', $filename);
+                $data['photo'] = $filename;
+            }
+
+            $seize = Seizeregister::where('id', $seizeid)->update($data);
+            return response()->json(["message" => "Success", "data" => $seize], 201);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 201);
+        }
     }
 
     /**
@@ -183,9 +219,26 @@ class SeizeregisterController extends Controller
      * @param  \App\Seizeregister  $seizeregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Seizeregister $seizeregister)
+    public function destroy(Request $request)
     {
-        //
+        $seizeid = $request->seizeid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Seizeregister::where('id', $seizeid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Seizeregister::where('id', $seizeid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $arm = Seizeregister::find($seizeid);
+            $arm->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)

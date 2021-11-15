@@ -115,6 +115,7 @@ class CrimeregisterController extends Controller
             'registernumber' => 'nullable|string',
             'date' => 'nullable',
             'time' => 'nullable',
+            'actionTaken' => 'nullable',
         ]);
 
         $loggedinuser = auth()->guard('api')->user();
@@ -163,9 +164,32 @@ class CrimeregisterController extends Controller
      * @param  \App\Crimeregister  $crimeregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Crimeregister $crimeregister)
+    public function update(Request $request)
     {
-        //
+        $crimeid = $request->crimeid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Crimeregister::where('id', $crimeid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Crimeregister::where('id', $crimeid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'type' => 'nullable|string',
+                'registernumber' => 'nullable|string',
+                'date' => 'nullable',
+                'time' => 'nullable',
+                'actionTaken' => 'nullable',
+            ]);
+            $crime = Crimeregister::where('id', $crimeid)->update($data);
+            return response()->json(["message" => "Success", "data" => $crime], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -174,9 +198,26 @@ class CrimeregisterController extends Controller
      * @param  \App\Crimeregister  $crimeregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Crimeregister $crimeregister)
+    public function destroy(Request $request)
     {
-        //
+        $crimeid = $request->crimeid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Crimeregister::where('id', $crimeid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Crimeregister::where('id', $crimeid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $crime = Crimeregister::find($crimeid);
+            $crime->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)

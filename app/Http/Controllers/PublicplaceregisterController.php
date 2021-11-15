@@ -125,6 +125,7 @@ class PublicplaceregisterController extends Controller
             'issuereason' => 'nullable',
             'issuecondition' => 'nullable',
             'crimeregistered' => 'nullable',
+            'actionTaken' => 'nullable',
         ]);
 
 
@@ -182,9 +183,47 @@ class PublicplaceregisterController extends Controller
      * @param  \App\Publicplaceregister  $publicplaceregister
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Publicplaceregister $publicplaceregister)
+    public function update(Request $request)
     {
-        //
+        $publicplaceid = $request->publicplaceid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Publicplaceregister::where('id', $publicplaceid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Publicplaceregister::where('id', $publicplaceid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $data = $request->validate([
+                'place' => 'nullable|string',
+                'address' => 'nullable|string',
+                'latitude' => 'nullable',
+                'longitude' => 'nullable',
+                'photo' => 'nullable|image|mimes:jpg,png,jpeg,svg',
+                'iscctv' => 'nullable',
+                'isissue' => 'nullable',
+                'issuereason' => 'nullable',
+                'issuecondition' => 'nullable',
+                'crimeregistered' => 'nullable',
+                'actionTaken' => 'nullable',
+            ]);
+
+            if ($request->hasfile('photo')) {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = 'pp.thesupernest.com/uploads/publicplaceregister/' . time() . '.' . $extension;
+                $file->move('uploads/publicplaceregister', $filename);
+                $data['photo'] = $filename;
+            }
+
+            $publicplace = Publicplaceregister::where('id', $publicplaceid)->update($data);
+            return response()->json(["message" => "Success", "data" => $publicplace], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     /**
@@ -193,9 +232,26 @@ class PublicplaceregisterController extends Controller
      * @param  \App\Publicplaceregister  $publicplaceregister
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Publicplaceregister $publicplaceregister)
+    public function destroy(Request $request)
     {
-        //
+        $publicplaceid = $request->publicplaceid;
+        $loggedinuser = auth()->guard('api')->user();
+        $uid = $loggedinuser->id;
+        $getppid = Publicplaceregister::where('id', $publicplaceid)->pluck('ppid');
+        $getppid = trim($getppid, '[]',);
+        $getppid = (int)$getppid;
+
+        $getpsid = Publicplaceregister::where('id', $publicplaceid)->pluck('ppid');
+        $getpsid = trim($getpsid, '[]',);
+        $getpsid = (int)$getpsid;
+
+        if ($getppid == $uid or $getpsid == $uid) {
+            $publicplace = Publicplaceregister::find($publicplaceid);
+            $publicplace->delete();
+            return response()->json(["message" => "Success"], 200);
+        } else {
+            return response()->json(["message" => "You are not authorized person."], 404);
+        }
     }
 
     public function showbyppid($ppid)
