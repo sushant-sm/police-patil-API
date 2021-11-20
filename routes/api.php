@@ -21,7 +21,8 @@ use Carbon\Carbon;
 Route::prefix('/user')->group(function () {
     Route::post('/login', 'api\LoginController@login');
 });
-
+Route::get('/attendance', 'AttendanceController@index');
+Route::get('/attendance/certificate', 'AttendanceController@show');
 Route::get('/baseurl', 'BaseurlController@index');
 Route::post('adduser', 'AuthController@register');
 Route::group(['middleware' => ['auth:api']], function () {
@@ -143,5 +144,4 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/certificate', 'CertificateController@index');
 
     Route::get('/top-pp', 'PointsController@index');
-    // Route::get('/points')
 });
