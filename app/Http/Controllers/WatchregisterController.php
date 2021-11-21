@@ -69,6 +69,9 @@ class WatchregisterController extends Controller
      */
     public function store(Request $request)
     {
+        $loggedinuser = auth()->guard('api')->user();
+        $role = $loggedinuser->role;
+        // return $role;
         $data = $request->validate([
             'type' => 'required|string',
             'name' => 'required|string',
@@ -85,12 +88,16 @@ class WatchregisterController extends Controller
             'actionTaken' => 'nullable',
         ]);
 
-        $loggedinuser = auth()->guard('api')->user();
-        $ppid = $loggedinuser->id;
+        $uid = $loggedinuser->id;
         $psid = $loggedinuser->psid;
-
-        $data['ppid'] = $ppid;
-        $data['psid'] = $psid;
+        $role = $loggedinuser->role;
+        if ($role == 'pp') {
+            $data['ppid'] = $uid;
+            $data['psid'] = $psid;
+        } else if ($role == 'ps' or $role == 'admin') {
+            $data['psid'] = $request->psid;
+            $data['ppid'] = $request->ppid;
+        }
 
         if ($request->hasfile('aadhar')) {
             $file = $request->file('aadhar');

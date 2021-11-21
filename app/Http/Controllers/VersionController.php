@@ -8,7 +8,7 @@ class VersionController extends Controller
 {
     public function index(Request $request)
     {
-        return response()->json(["message" => "Success", "minversion" => "0.0.0", "latestversion" => "1.0.0+1", "note" => "Some Message"], 200);
+        return response()->json(["message" => "Success", "minversion" => "0.0.0", "latestversion" => "1.0.0", "note" => "Some Message"], 200);
 
         // $fresh = "1.1.0";
         // $fine = array("1.0.8", "1.0.7");

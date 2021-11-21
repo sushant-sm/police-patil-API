@@ -21,11 +21,16 @@ use Carbon\Carbon;
 Route::prefix('/user')->group(function () {
     Route::post('/login', 'api\LoginController@login');
 });
-Route::get('/attendance', 'AttendanceController@index');
-Route::get('/attendance/certificate', 'AttendanceController@show');
+
+Route::post('/mandhan', 'MandhanController@store');
+Route::get('/mandhan/certificate', 'MandhanController@show');
+Route::get('/certificate/show', 'CertificateController@show');
 Route::get('/baseurl', 'BaseurlController@index');
 Route::post('adduser', 'AuthController@register');
 Route::group(['middleware' => ['auth:api']], function () {
+
+    Route::get('/mandhan', 'MandhanController@index');
+    Route::get('/certificate', 'CertificateController@store');
 
     Route::apiResource('/user', 'AdduserinfoController');
     Route::get('/village', 'AdduserinfoController@village');
@@ -140,7 +145,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('/alltables', 'AlltableController');
     Route::apiResource('/useraccess', 'UseraccessController');
 
-    Route::post('/mandhan', 'MandhanController@index');
     Route::post('/certificate', 'CertificateController@index');
 
     Route::get('/top-pp', 'PointsController@index');
