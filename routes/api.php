@@ -29,6 +29,7 @@ Route::get('/baseurl', 'BaseurlController@index');
 Route::post('adduser', 'AuthController@register');
 Route::group(['middleware' => ['auth:api']], function () {
 
+    Route::get('/home', 'DashboardController@index');
     Route::get('/mandhan', 'MandhanController@index');
     Route::get('/certificate', 'CertificateController@store');
 
@@ -113,8 +114,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/publicplace/showbypsid/{psid}', 'PublicplaceregisterController@showbypsid');
 
     //Illegal work Register
-    Route::put('/latestillegalwork/edit', 'IllegalworkregisterController@update');
-    Route::delete('/latestillegalwork/delete', 'IllegalworkregisterController@destroy');
+    Route::put('/illegalwork/edit', 'IllegalworkregisterController@update');
+    Route::delete('/illegalwork/delete', 'IllegalworkregisterController@destroy');
     Route::apiResource('/illegalwork', 'IllegalworkregisterController');
     Route::get('/latestillegalwork', 'IllegalworkregisterController@latest');
     Route::get('/illegalwork/showbyppid/{ppid}', 'IllegalworkregisterController@showbyppid');

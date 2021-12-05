@@ -202,7 +202,6 @@ class IllegalworkregisterController extends Controller
                 'longitude' => 'nullable',
                 'actionTaken' => 'nullable',
             ]);
-
             if ($request->hasfile('photo')) {
                 $file = $request->file('photo');
                 $extension = $file->getClientOriginalExtension();
