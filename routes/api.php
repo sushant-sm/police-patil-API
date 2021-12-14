@@ -27,6 +27,7 @@ Route::get('/mandhan/certificate', 'MandhanController@show');
 Route::get('/certificate/show', 'CertificateController@show');
 Route::get('/baseurl', 'BaseurlController@index');
 Route::post('adduser', 'AuthController@register');
+// Route::get('/home', 'DashboardController@index');
 Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('/home', 'DashboardController@index');
@@ -146,7 +147,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('/alltables', 'AlltableController');
     Route::apiResource('/useraccess', 'UseraccessController');
 
-    Route::post('/certificate', 'CertificateController@index');
+    // Route::post('/certificate', 'CertificateController@index');
 
     Route::get('/top-pp', 'PointsController@index');
 });

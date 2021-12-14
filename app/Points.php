@@ -7,4 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Points extends Model
 {
     protected $guarded = [];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

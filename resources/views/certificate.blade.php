@@ -20,23 +20,25 @@
 <body>
 
     <h3 style="text-align: right; margin-right: 20px;">दिनांक: {{ $date }}</h3>
-    <center><h3>हजेरी प्रमाणपत्र</h3></center>
+    <center><h3>
+पोलीस पाटील दाखला</h3></center>
 	<div style="text-align: left; margin-left: 30px;">प्रति,</div>
     <p style="margin-left: 40px;"> मा. पोलीस निरीक्षक, <br>
          {{ $taluka }} पोलीस स्टेशन, <br>
          पुणे ग्रामीण </p> <br>
     <p style="margin-left: 40px;">
 
-        गाव कामगार पोलीस पाटील मौजे {{ $village }} तालुका {{ $taluka }} जिल्हा पुणे यांच्याकडून दाखला देण्यात येतो की {{ $name }} वय {{ $age }} हे मौजे {{ $village }} ता. {{ $taluka }} जि. पुणे येथील कायमचे रहिवासी असुन त्यांची वर्तणूक चांगली आहे तसेच ते माझ्या पुर्ण परिचयाचे आहेत.
+        गाव कामगार पोलीस पाटील मौजे {{ $village }} जिल्हा पुणे यांच्याकडून दाखला देण्यात येतो की {{ $name }} लिंग {{ $gender }} वय {{ $age }} हे मौजे ता. {{ $taluka }} जि. पुणे येथील कायमचे रहिवासी असुन त्यांची वर्तणूक चांगली आहे तसेच ते माझ्या पुर्ण परिचयाचे आहेत.
         <br><br> सबब दाखला मागणीवरून दिला असे.
     </p>
 <br><br>
     <p  style="text-align: right; margin-right: 20px;">
-    ({{ $ppname }}) <br>
+    {{ $ppname }} <br>
      पोलीस पाटील  <br>
      ता.{{ $taluka }}  जिल्हा पुणे</p>
 
 <br><br>
+This is digitally generated document and do not require signature.
 <center><button class="hide" onclick="window.print()">Print this page</button><center>
 
 

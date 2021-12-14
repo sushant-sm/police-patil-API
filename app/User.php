@@ -35,4 +35,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function points()
+    {
+        return $this->hasOne('App\Points', 'ppid');
+    }
 }

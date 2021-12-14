@@ -110,6 +110,7 @@ class CrimeregisterController extends Controller
      */
     public function store(Request $request)
     {
+        // return "asdf";
         $data = $request->validate([
             'type' => 'required|string',
             'registernumber' => 'nullable|string',
@@ -117,10 +118,11 @@ class CrimeregisterController extends Controller
             'time' => 'nullable',
             'actionTaken' => 'nullable',
         ]);
-
+        // return $data;
         $loggedinuser = auth()->guard('api')->user();
         $ppid = $loggedinuser->id;
         $psid = $loggedinuser->psid;
+        // return $psid;
 
         $data['ppid'] = $ppid;
         $data['psid'] = $psid;

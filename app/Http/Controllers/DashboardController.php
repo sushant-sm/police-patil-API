@@ -20,8 +20,10 @@ class DashboardController extends Controller
         // return $role;
         if ($role == 'admin') {
             // Top 10 Police patil
-            $top10pp = Points::orderBy('points', 'DESC')->limit(10)->get('ppid');
+            $top10pp = Points::orderBy('points', 'DESC')->limit(10)->pluck('ppid');
+
             $psname = $this->getpp($top10pp);
+            // return $psname;
 
             // Latest Illeagal Work
             $latestillegalwork = Illegalworkregister::latest()->take(10)->get();
@@ -99,26 +101,14 @@ class DashboardController extends Controller
             } else {
                 $graphmovement = Movementregister::select(
                     DB::raw("(COUNT(*)) as count"),
-                    DB::raw("MONTHNAME(created_at) as month_name")
+                    DB::raw("MONTHNAME(created_at) as month_name"),
+                    DB::raw("type as month_type")
                 )
                     ->whereYear('created_at', date('Y'))
-                    ->groupBy('month_name')
+                    ->groupBy('month_name', 'type')
                     ->get()
                     ->toArray();
             }
-
-
-
-
-
-            // $graphmovement = Movementregister::select(
-            //     DB::raw("(COUNT(*)) as count"),
-            //     DB::raw("MONTHNAME(created_at) as month_name")
-            // )
-            //     ->whereYear('created_at', date('Y'))
-            //     ->groupBy('month_name')
-            //     ->get()
-            //     ->toArray();
 
             $data = array('top10pp' => $psname, 'latestillegalwork' => $latestillegalwork, 'latestwatch' => $latestwatch, 'latestmovement' => $latestmovement, 'graphcrime' => $graphcrime, 'graphmovement' => $graphmovement);
             return response()->json(["message" => "Sucees", "data" => $data], 200);
@@ -168,7 +158,8 @@ class DashboardController extends Controller
     }
     public function getpp($ppid)
     {
-        $data = User::whereIn('id', $ppid)->get();
+        $data = trim($ppid, '{}[]',);
+        $data = User::whereIn('id', $ppid)->orderByRaw("FIELD(id, $data)")->get();
         return $data;
     }
 }

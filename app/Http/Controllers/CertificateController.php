@@ -19,8 +19,8 @@ class CertificateController extends Controller
         $name = $request->name;
         $age = $request->age;
         $today = date('d-m-Y');
-
-        $link = "http://127.0.0.1:8000/api/certificate/show?village=$village&taluka=$taluka&name=$name&age=$age&date=$today&ppname=$ppname";
+        $gender = $request->gender;
+        $link = "http://127.0.0.1:8000/api/certificate/show?village=$village&taluka=$taluka&name=$name&age=$age&date=$today&ppname=$ppname&gender=$gender";
         return response()->json(["message" => "Success", "link" => $link], 200);
     }
 
@@ -32,6 +32,7 @@ class CertificateController extends Controller
         $name = $request->name;
         $age = $request->age;
         $date = $request->date;
-        return view('certificate', compact('village', 'taluka', 'name', 'age', 'ppname', 'date'));
+        $gender = $request->gender;
+        return view('certificate', compact('village', 'taluka', 'name', 'age', 'ppname', 'date', 'gender'));
     }
 }
